@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "Si usas CrioLab, cítalo como se indica a continuación."
+title: "CrioLab · Simuladores críticos"
+abstract: >-
+  Cuatro simuladores web interactivos que convierten en algo manipulable y
+  visible las preguntas metodológicas sin resolver de cuatro manuscritos 2026
+  del grupo A. Ramírez-Reveco (Universidad Austral de Chile): efecto Wahlund
+  en genética de burros, falso negativo del potencial glicolítico (GPstrict),
+  potencia estadística en criopreservación de semen equino, y sensibilidad del
+  VAN en tracción animal.
+type: software
+# TODO: reemplaza el autor por tu nombre real (given-names / family-names)
+authors:
+  - name: "rijdho"
+url: "https://rijdho.github.io/criolab/"
+repository-code: "https://github.com/rijdho/criolab"
+license: MIT
+version: "1.0.0"
+date-released: "2026-07-17"
+keywords:
+  - lectura crítica
+  - efecto Wahlund
+  - potencial glicolítico
+  - potencia estadística
+  - Monte Carlo
+  - valor actual neto
+  - divulgación científica

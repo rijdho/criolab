@@ -4,6 +4,10 @@ Cuatro simuladores interactivos que convierten en algo **manipulable y visible**
 
 En varios casos la herramienta hace, de forma didáctica, la validación que los propios artículos no incluyen.
 
+**En vivo:** https://rijdho.github.io/criolab/
+
+---
+
 ## Los cuatro simuladores
 
 | # | Paper | Lo que el simulador demuestra |
@@ -13,24 +17,59 @@ En varios casos la herramienta hace, de forma didáctica, la validación que los
 | ③ | **Enantiómeros de glucosa en semen equino** (n=4) | **Potencia estadística.** Un Monte Carlo muestra que, con 4 sementales, un resultado "sin diferencias" es esperable por diseño aunque exista un efecto real — no es evidencia de ausencia de efecto. |
 | ④ | **Tracción animal vs mecanización (PNFE)** — Ulloa et al. | **Sensibilidad del VAN.** El titular de +16.796 USD colapsa al mover la tasa de descuento, el precio del diésel o la intensidad de uso de suelo (108%, simulada). El resultado es un supuesto, no un dato. |
 
-## Uso
+La página incluye además una pestaña **Panorama** (introducción + el hilo que conecta los cuatro trabajos) y **Glosario y fuentes** (14 términos y las referencias).
 
-Es una sola página autocontenida, **sin dependencias ni build**.
+Las fórmulas, entradas y calibración de cada modelo están documentadas en **[`METHODS.md`](METHODS.md)**.
 
-- **Abrir localmente:** doble clic en `index.html`, o servir la carpeta:
-  ```bash
-  python3 -m http.server 8000
-  # http://localhost:8000
-  ```
-- **Publicar en GitHub Pages:** Settings → Pages → *Deploy from a branch* → `main` / `/ (root)`. El archivo `.nojekyll` evita el procesamiento Jekyll.
+---
+
+## Estructura del repositorio
+
+```
+index.html          La aplicación completa: 4 simuladores en un solo archivo,
+                    vanilla JS + SVG, sin build ni dependencias externas.
+METHODS.md          Fórmulas, supuestos y calibración de cada simulador.
+README.md           Este archivo.
+CITATION.cff        Metadatos de citación.
+LICENSE             MIT.
+mapa-critico.drawio Mapa conceptual de los cuatro papers (abrir con diagrams.net).
+.nojekyll           Evita el procesamiento Jekyll en GitHub Pages.
+```
+
+Todo el proyecto es autocontenido: mover la carpeta a cualquier ubicación no rompe nada, y el historial `git` viaja con ella.
+
+---
+
+## Uso local
+
+No requiere build. Doble clic en `index.html`, o sirve la carpeta:
+
+```bash
+python3 -m http.server 8000
+# http://localhost:8000
+```
+
+## Publicar en GitHub Pages
+
+Settings → Pages → *Deploy from a branch* → `main` / `/ (root)`. El archivo `.nojekyll` evita el procesamiento Jekyll. Por CLI:
+
+```bash
+gh api --method POST repos/<owner>/<repo>/pages -f "source[branch]=main" -f "source[path]=/"
+```
+
+---
 
 ## Diseño
 
-Sistema visual compartido con los demás desarrollos `rijdho`: tipografía display (Helvetica Neue 800) + mono para etiquetas y cifras, paleta violeta, tema claro/oscuro automático con conmutador persistente. Cero fuentes o scripts externos.
+Sistema visual compartido con los demás desarrollos `rijdho`: tipografía display (Helvetica Neue 800) + monoespaciada para etiquetas y cifras, paleta violeta, tema claro/oscuro automático con conmutador persistente (`localStorage`). Cero fuentes o scripts externos.
 
 ## Aviso
 
-Los modelos son **reconstrucciones didácticas simplificadas** para explorar los supuestos de cada trabajo, **no reanálisis de los datos originales**. Las cifras por defecto están calibradas contra los valores publicados; los deslizadores muestran sensibilidad, no resultados oficiales.
+Los modelos son **reconstrucciones didácticas simplificadas** para explorar los supuestos de cada trabajo, **no reanálisis de los datos originales**. Las cifras por defecto están calibradas contra los valores publicados; los deslizadores muestran sensibilidad, no resultados oficiales. Detalle y limitaciones de cada modelo en [`METHODS.md`](METHODS.md).
+
+## Cómo citar
+
+Ver [`CITATION.cff`](CITATION.cff).
 
 ## Licencia
 
