@@ -134,6 +134,48 @@ svg{display:block;width:100%;height:auto;overflow:visible;margin:2px 0}
 .v-bad{color:var(--crit);background:color-mix(in srgb,var(--crit) 11%,transparent)}
 .verdict b, .verdict sub{color:inherit}
 
+/* term tooltip (glosario inline) */
+.term{border-bottom:1.5px dotted var(--muted);cursor:help;position:relative}
+.term:hover::after{content:attr(data-tip);position:absolute;left:0;bottom:calc(100% + 9px);width:250px;background:var(--ink);color:var(--paper);font-family:var(--body);font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:9px 11px;border-radius:9px;box-shadow:var(--shadow);z-index:50}
+.term:hover::before{content:"";position:absolute;left:14px;bottom:calc(100% + 3px);border:6px solid transparent;border-top-color:var(--ink);z-index:50}
+/* encuadre 3-part */
+.frame{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:2px 0 24px}
+@media(max-width:760px){.frame{grid-template-columns:1fr}}
+.frame .f{background:var(--surface);border:1px solid var(--hairline);border-radius:11px;padding:13px 15px;box-shadow:var(--shadow)}
+.frame .f .k{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.frame .f p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.5}
+.frame .f.paper .k{color:var(--ink-2)} .frame .f.q .k{color:var(--crit)} .frame .f.do .k{color:var(--brand)}
+/* figure caption */
+.figcap{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.55;margin-top:9px}
+/* panorama overview cards */
+.ov-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:8px 0 8px}
+@media(max-width:760px){.ov-grid{grid-template-columns:1fr}}
+.ov{text-align:left;background:var(--surface);border:1px solid var(--hairline);border-left:3px solid var(--tc);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);cursor:pointer;color:inherit;display:block;width:100%;font-family:var(--body)}
+.ov:hover{border-color:var(--tc);transform:translateY(-2px);transition:.15s}
+.ov .num{font-family:var(--mono);font-size:11px;color:var(--tc);letter-spacing:.06em}
+.ov h4{font-family:var(--disp);font-weight:800;font-size:16px;margin:4px 0 6px;letter-spacing:-.01em}
+.ov p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.ov .cta{font-family:var(--mono);font-size:11px;color:var(--tc);margin-top:9px;display:inline-block}
+.blk{margin:30px 0 0}
+.blk h3{font-size:17px;margin:0 0 6px}
+.blk p{color:var(--ink-2);font-size:14px;margin:0 0 12px;max-width:78ch}
+.threads{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.threads{grid-template-columns:1fr}}
+.thread{background:var(--surface-2);border-radius:12px;padding:15px 17px}
+.thread .t{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--brand);margin-bottom:6px}
+.thread p{font-size:13px;color:var(--ink-2);margin:0;line-height:1.55}
+.oq{list-style:none;padding:0;margin:12px 0 0}
+.oq li{position:relative;padding:9px 0 9px 22px;border-top:1px solid var(--hairline);font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.oq li::before{content:"→";position:absolute;left:0;color:var(--brand);font-family:var(--mono)}
+/* glossary + refs */
+.glo{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:2px 0 0}
+@media(max-width:760px){.glo{grid-template-columns:1fr}}
+.gterm{background:var(--surface);border:1px solid var(--hairline);border-radius:11px;padding:13px 15px;box-shadow:var(--shadow)}
+.gterm dt{font-family:var(--disp);font-weight:800;font-size:14px;margin-bottom:3px}
+.gterm dd{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.ref{padding:13px 0;border-top:1px solid var(--hairline);font-size:13px;color:var(--ink-2);line-height:1.55}
+.ref .n{font-family:var(--mono);color:var(--brand);margin-right:8px;font-weight:600}
+.ref b{color:var(--ink);font-weight:700}
 footer{border-top:1px solid var(--hairline);padding:24px 0 46px;color:var(--muted);font-family:var(--mono);font-size:11px;line-height:1.7}
 footer b{color:var(--ink-2)}
 .tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted);vertical-align:middle;margin-left:8px;letter-spacing:.03em}
@@ -164,18 +206,86 @@ footer b{color:var(--ink-2)}
   </div>
 
   <nav class="subtabs" id="tabs">
-    <button class="subtab active" data-t="burro" style="--tc:var(--c-burro)"><span class="dot"></span>① Burros · Wahlund</button>
+    <button class="subtab active" data-t="panorama" style="--tc:var(--brand)"><span class="dot"></span>⌂ Panorama</button>
+    <button class="subtab" data-t="burro" style="--tc:var(--c-burro)"><span class="dot"></span>① Burros · Wahlund</button>
     <button class="subtab" data-t="gp" style="--tc:var(--c-gp)"><span class="dot"></span>② GPstrict · carne DFD</button>
     <button class="subtab" data-t="semen" style="--tc:var(--c-semen)"><span class="dot"></span>③ Semen · potencia</button>
     <button class="subtab" data-t="econ" style="--tc:var(--c-econ)"><span class="dot"></span>④ Economía · VAN</button>
+    <button class="subtab" data-t="fuentes" style="--tc:var(--c6)"><span class="dot"></span>Glosario y fuentes</button>
   </nav>
 
+<!-- ============ 0. PANORAMA ============ -->
+<section class="panel active" id="p-panorama">
+  <div class="phead">
+    <span class="eyebrow">Qué es esto · cómo usarlo</span>
+    <h2>Cuatro papers, cuatro preguntas que no cierran</h2>
+    <p>CrioLab reúne cuatro manuscritos 2026 del grupo Ramírez-Reveco (UACh). Cada uno deja una pregunta metodológica abierta; aquí puedes manipularla y verla en vivo. Empieza por cualquiera de las cuatro tarjetas.</p>
+  </div>
+
+  <div class="ov-grid">
+    <button class="ov" style="--tc:var(--c-burro)" onclick="goTab('burro')">
+      <span class="num">① BURROS · GENÉTICA</span>
+      <h4>¿Endogamia o estructura?</h4>
+      <p>Mezclar dos rebaños distintos produce un déficit de heterocigotos idéntico a "endogamia" sin ninguna cruza consanguínea (efecto Wahlund).</p>
+      <span class="cta">Abrir simulador →</span>
+    </button>
+    <button class="ov" style="--tc:var(--c-gp)" onclick="goTab('gp')">
+      <span class="num">② GPSTRICT · CARNE</span>
+      <h4>El falso negativo</h4>
+      <p>Con estrés pre-faena la fórmula clásica "aprueba" una carne que en realidad se va a DFD. El simulador reproduce el caso que el paper afirma pero no muestra.</p>
+      <span class="cta">Abrir simulador →</span>
+    </button>
+    <button class="ov" style="--tc:var(--c-semen)" onclick="goTab('semen')">
+      <span class="num">③ SEMEN · ESTADÍSTICA</span>
+      <h4>¿Nulo real o sin potencia?</h4>
+      <p>Con 4 sementales, un "sin diferencias" es esperable por diseño aunque exista un efecto real. Un Monte Carlo lo hace evidente.</p>
+      <span class="cta">Abrir simulador →</span>
+    </button>
+    <button class="ov" style="--tc:var(--c-econ)" onclick="goTab('econ')">
+      <span class="num">④ ECONOMÍA · VAN</span>
+      <h4>¿Qué tan frágil es el VAN?</h4>
+      <p>El titular de +16.796 USD colapsa al mover la tasa de descuento, el diésel o la intensidad de uso de suelo (simulada).</p>
+      <span class="cta">Abrir simulador →</span>
+    </button>
+  </div>
+
+  <div class="blk">
+    <h3>Cómo leer la herramienta</h3>
+    <p>Cada simulador tiene un color (el punto de su pestaña). A la izquierda, los <b>controles</b>: mueve los deslizadores. A la derecha, los <b>resultados</b>, un gráfico y un veredicto que se actualizan al instante. Las palabras con <span class="term" data-tip="Así se ven los términos con definición: pasa el cursor por encima.">línea punteada</span> muestran su definición al pasar el cursor; el glosario completo está en la última pestaña. Arriba a la derecha puedes cambiar entre tema claro y oscuro.</p>
+  </div>
+
+  <div class="blk">
+    <h3>El hilo que los conecta</h3>
+    <p>Aunque parezcan temas dispares, se agrupan en dos hilos — y el estudio de semen (③) pertenece a los dos a la vez.</p>
+    <div class="threads">
+      <div class="thread">
+        <div class="t">Hilo équido</div>
+        <p>Burros (①), semen equino (③) y caballos de tiro (④) son, en el fondo, el mismo recurso animal mirado desde la genética, la reproducción y la economía — pero se estudian en silos, sin un marco integrador.</p>
+      </div>
+      <div class="thread">
+        <div class="t">Hilo bioenergético · minimalismo metabólico</div>
+        <p>GPstrict (②) y el semen hipometabólico (③) comparten una misma idea nunca enunciada como programa: <em>menos sustrato no es peor</em>. El músculo se cierra termodinámicamente; el espermatozoide sobrevive con mínima energía.</p>
+      </div>
+    </div>
+    <ul class="oq">
+      <li>La criopreservación (③) es justo la herramienta que el "manejo genético urgente" de ① necesitaría — y nadie tiende ese puente.</li>
+      <li>Los burros ferales del altiplano —los verdaderamente salvajes— nunca se caracterizan, pese a ser el punto de comparación clave.</li>
+      <li>Ninguna de las tres piezas equinas dialoga con las otras dentro del propio corpus.</li>
+      <li>Las declaraciones de uso de IA son inconsistentes entre los cuatro artículos (de "ninguna" a Grammarly, Claude y un LLM de Google).</li>
+    </ul>
+  </div>
+</section>
+
 <!-- ============ 1. WAHLUND ============ -->
-<section class="panel active" id="p-burro">
+<section class="panel" id="p-burro">
   <div class="phead">
     <span class="eyebrow" style="color:var(--c-burro)">① Burro criollo chileno · JABG 2026</span>
     <h2>¿Endogamia… o estructura disfrazada? El efecto Wahlund</h2>
-    <p>El paper reporta un déficit de heterocigotos y un F<sub>IS</sub> de +0,18, y lo lee como "endogamia moderada". Pero mezclar dos subpoblaciones con frecuencias alélicas distintas produce <b>exactamente el mismo déficit sin una sola cruza consanguínea</b>. Aquí ambas subpoblaciones están en perfecto equilibrio Hardy-Weinberg: toda la "endogamia" que verás es una ilusión de muestreo.</p>
+  </div>
+  <div class="frame">
+    <div class="f paper"><div class="k">El paper dice</div><p>Un <span class="term" data-tip="Índice de fijación: mide el exceso o déficit de heterocigotos respecto a Hardy-Weinberg. Positivo = menos heterocigotos de lo esperado.">F<sub>IS</sub></span> de +0,18 → "endogamia moderada" en el burro criollo, y pide manejo genético urgente.</p></div>
+    <div class="f q"><div class="k">La pregunta abierta</div><p>¿Ese déficit es endogamia real, o solo mezcla de rebaños de distinto origen (<span class="term" data-tip="Efecto Wahlund: agrupar subpoblaciones con frecuencias alélicas distintas produce un déficit aparente de heterocigotos, aunque nadie sea endogámico.">efecto Wahlund</span>)? El estudio no los separa.</p></div>
+    <div class="f do"><div class="k">Qué haces aquí</div><p>Mueve las frecuencias de dos subpoblaciones —ambas sin endogamia, en equilibrio Hardy-Weinberg— y observa el F<sub>IS</sub> que aparece solo por mezclarlas.</p></div>
   </div>
   <div class="split">
     <div class="card">
@@ -211,6 +321,7 @@ footer b{color:var(--ink-2)}
           <div class="mtile"><div class="k">F<sub>ST</sub> estructura</div><div class="v" id="m-fst" style="color:var(--c5)">—</div></div>
         </div>
         <svg id="svg-burro" viewBox="0 0 520 220"></svg>
+        <div class="figcap">Barras: heterocigosis observada (media dentro de subpoblaciones) vs esperada si todo fuese una sola población. La línea roja marca el "déficit" que se confunde con endogamia.</div>
         <div class="verdict" id="ver-burro"></div>
       </div>
     </div>
@@ -222,7 +333,11 @@ footer b{color:var(--ink-2)}
   <div class="phead">
     <span class="eyebrow" style="color:var(--c-gp)">② Potencial glicolítico estricto · nota teórica</span>
     <h2>El falso negativo que el paper afirma pero nunca muestra</h2>
-    <p>La fórmula clásica de Monin &amp; Sellier (1985) suma el lactato basal. El paper propone quitarlo (GP<sub>strict</sub>) porque tras la exsanguinación ese lactato es inerte y no baja más el pH. Sube el <b>estrés pre-faena</b>: el glucógeno cae y el lactato se dispara — y verás cómo la fórmula clásica sigue prediciendo acidificación "normal" mientras la carne, en realidad, se va a DFD.</p>
+  </div>
+  <div class="frame">
+    <div class="f paper"><div class="k">El paper dice</div><p>La fórmula clásica de <span class="term" data-tip="Potencial glicolítico (Monin &amp; Sellier, 1985): estima la capacidad de acidificación del músculo post-mortem sumando reservas de carbohidratos y lactato.">GP</span> infla el resultado con el lactato basal; propone GP<sub>strict</sub> (sin ese lactato) como la métrica correcta.</p></div>
+    <div class="f q"><div class="k">La pregunta abierta</div><p>Nunca se demuestra con datos que GP<sub>strict</sub> prediga mejor el pH final ni que la clásica falle. ¿Cuándo importa de verdad?</p></div>
+    <div class="f do"><div class="k">Qué haces aquí</div><p>Sube el estrés pre-faena y mira cómo la fórmula clásica "aprueba" una carne que en realidad es <span class="term" data-tip="Carne DFD (Dark, Firm, Dry): defecto de calidad por pH final alto (&gt;5,9) tras agotarse el glucógeno por estrés antes de la faena.">DFD</span>.</p></div>
   </div>
   <div class="split">
     <div class="card">
@@ -256,6 +371,7 @@ footer b{color:var(--ink-2)}
           <div class="mtile"><div class="k">GP strict</div><div class="v" id="m-gps" style="color:var(--c1)">—</div><div class="u">µmol/g</div></div>
         </div>
         <svg id="svg-gp" viewBox="0 0 520 150"></svg>
+        <div class="figcap">Regla de pH final. El triángulo azul es lo que predice la fórmula clásica; el violeta, el pH real (GP<sub>strict</sub>). Si el violeta cae en la zona sombreada (&gt;5,9), la carne es DFD.</div>
         <div class="verdict" id="ver-gp"></div>
       </div>
     </div>
@@ -267,7 +383,11 @@ footer b{color:var(--ink-2)}
   <div class="phead">
     <span class="eyebrow" style="color:var(--c-semen)">③ Enantiómeros de glucosa en semen · n=4</span>
     <h2>"Sin diferencias significativas"… ¿real o falta de potencia?</h2>
-    <p>El estudio concluye que la glucosa exógena no aporta, a partir de un resultado nulo con <b>4 sementales</b>. Pero un test puede no encontrar una diferencia simplemente porque no tiene poder para verla. Este Monte Carlo simula miles de experimentos: fija un efecto real y mide con qué frecuencia el test lo detectaría con ese tamaño de muestra.</p>
+  </div>
+  <div class="frame">
+    <div class="f paper"><div class="k">El paper dice</div><p>La glucosa exógena no mejora el semen equino post-descongelación: sin diferencias significativas entre tratamientos (n=4 sementales).</p></div>
+    <div class="f q"><div class="k">La pregunta abierta</div><p>¿Es ausencia real de efecto, o falta de <span class="term" data-tip="Potencia estadística: probabilidad de detectar un efecto que sí existe. Con muestras pequeñas es baja, y un resultado no significativo se vuelve ambiguo.">potencia</span>? Con n=4 un test casi no puede detectar nada.</p></div>
+    <div class="f do"><div class="k">Qué haces aquí</div><p>Fija un efecto real y comprueba, con miles de experimentos simulados (<span class="term" data-tip="Monte Carlo: se genera aleatoriamente el experimento muchas veces para estimar con qué frecuencia daría significativo.">Monte Carlo</span>), con qué frecuencia el test lo detectaría según el tamaño de muestra.</p></div>
   </div>
   <div class="split">
     <div class="card">
@@ -297,6 +417,7 @@ footer b{color:var(--ink-2)}
           <div class="mtile"><div class="k">n para 80% de potencia</div><div class="v" id="m-nneed">—</div></div>
         </div>
         <svg id="svg-pow" viewBox="0 0 520 220"></svg>
+        <div class="figcap">Curva de potencia según n por grupo. El punto marca tu n actual; la línea al 80% es el mínimo convencional. Por debajo de ella, un resultado nulo no es concluyente.</div>
         <div class="verdict" id="ver-pow"></div>
       </div>
     </div>
@@ -308,7 +429,11 @@ footer b{color:var(--ink-2)}
   <div class="phead">
     <span class="eyebrow" style="color:var(--c-econ)">④ Tracción animal vs mecanización · PNFE</span>
     <h2>¿Qué tan frágil es el VAN de +16.796 USD?</h2>
-    <p>El titular del paper —el caballo de tiro genera un VAN de +16.796 USD en el escenario maíz— descansa sobre supuestos fijos: tasa de descuento del 6%, precio del diésel de 2011 y una intensidad de uso de suelo simulada. Mueve esos supuestos y observa cuánto del resultado sobrevive.</p>
+  </div>
+  <div class="frame">
+    <div class="f paper"><div class="k">El paper dice</div><p>El caballo de tiro genera un <span class="term" data-tip="Valor Actual Neto: suma de los flujos futuros descontados menos la inversión. Positivo = el proyecto crea valor.">VAN</span> de +16.796 USD (escenario maíz); es un activo estratégico para el minifundio.</p></div>
+    <div class="f q"><div class="k">La pregunta abierta</div><p>El resultado depende de supuestos fijos: <span class="term" data-tip="Tasa Social de Descuento: tasa con que se traen los flujos futuros a valor presente. Cuanto más alta, menor el VAN.">TSD</span> del 6%, diésel de 2011 y una intensidad de uso de suelo del 108% simulada. ¿Qué tan robusto es?</p></div>
+    <div class="f do"><div class="k">Qué haces aquí</div><p>Mueve esos supuestos y observa cuánto del VAN sobrevive.</p></div>
   </div>
   <div class="split">
     <div class="card">
@@ -352,9 +477,46 @@ footer b{color:var(--ink-2)}
           <div class="mtile"><div class="k">vs. paper (16.796)</div><div class="v" id="m-vandelta" style="font-size:20px">—</div></div>
         </div>
         <svg id="svg-econ" viewBox="0 0 520 200"></svg>
+        <div class="figcap">Flujo de caja descontado por año (0–12). Verde = ingreso neto, rojo = egreso. El VAN es la suma de todas las barras.</div>
         <div class="verdict" id="ver-econ"></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ============ 5. GLOSARIO Y FUENTES ============ -->
+<section class="panel" id="p-fuentes">
+  <div class="phead">
+    <span class="eyebrow" style="color:var(--c6)">Glosario y fuentes</span>
+    <h2>Términos clave y los cuatro manuscritos</h2>
+    <p>Definiciones breves de los conceptos que aparecen en los simuladores, y la referencia de cada trabajo.</p>
+  </div>
+  <div class="blk" style="margin-top:6px">
+    <h3>Glosario</h3>
+    <div class="glo">
+      <div class="gterm"><dl><dt>Heterocigosis (H₀ / Hₑ)</dt><dd>Proporción de individuos con dos alelos distintos en un locus. Observada (real) frente a esperada bajo equilibrio Hardy-Weinberg.</dd></dl></div>
+      <div class="gterm"><dl><dt>Hardy-Weinberg (HWE)</dt><dd>Frecuencias genotípicas esperadas en una población ideal sin selección, migración, deriva ni endogamia.</dd></dl></div>
+      <div class="gterm"><dl><dt>F<sub>IS</sub> · índice de fijación</dt><dd>Exceso o déficit de heterocigotos respecto a HWE. Positivo = menos heterocigotos de lo esperado (endogamia <em>o</em> estructura).</dd></dl></div>
+      <div class="gterm"><dl><dt>Efecto Wahlund</dt><dd>Déficit aparente de heterocigotos que surge al agrupar subpoblaciones con frecuencias alélicas distintas, sin que exista endogamia.</dd></dl></div>
+      <div class="gterm"><dl><dt>F<sub>ST</sub></dt><dd>Grado de diferenciación genética entre subpoblaciones (0 = idénticas; 1 = fijadas para alelos distintos).</dd></dl></div>
+      <div class="gterm"><dl><dt>Microsatélite (STR)</dt><dd>Marcador de ADN repetitivo y muy variable, usado para medir diversidad y parentesco.</dd></dl></div>
+      <div class="gterm"><dl><dt>Potencial glicolítico (GP)</dt><dd>Estimación de la capacidad de acidificación del músculo post-mortem (Monin &amp; Sellier, 1985). GP<sub>strict</sub> excluye el lactato basal.</dd></dl></div>
+      <div class="gterm"><dl><dt>Carne DFD</dt><dd>Dark, Firm, Dry: defecto por pH final alto (&gt;5,9) tras agotarse el glucógeno por estrés antes de la faena.</dd></dl></div>
+      <div class="gterm"><dl><dt>Exsanguinación</dt><dd>Desangrado en la faena; convierte el músculo en un sistema termodinámico cerrado.</dd></dl></div>
+      <div class="gterm"><dl><dt>Potencia estadística</dt><dd>Probabilidad de detectar un efecto que sí existe (1 − β). Baja con muestras pequeñas: un nulo se vuelve ambiguo.</dd></dl></div>
+      <div class="gterm"><dl><dt>Monte Carlo</dt><dd>Simulación que repite un experimento con datos aleatorios muchas veces para estimar una probabilidad.</dd></dl></div>
+      <div class="gterm"><dl><dt>Enantiómero (D / L glucosa)</dt><dd>Moléculas imagen especular: D es metabolizable; L es inerte. Permiten separar el efecto químico del metabólico.</dd></dl></div>
+      <div class="gterm"><dl><dt>VAN · Valor Actual Neto</dt><dd>Suma de los flujos futuros descontados menos la inversión inicial. Positivo = el proyecto crea valor.</dd></dl></div>
+      <div class="gterm"><dl><dt>TSD · Tasa Social de Descuento</dt><dd>Tasa con que se traen los flujos futuros a valor presente. Más alta → VAN menor.</dd></dl></div>
+    </div>
+  </div>
+  <div class="blk">
+    <h3>Los cuatro manuscritos (2026)</h3>
+    <p style="font-size:12.5px">Manuscritos del grupo A. Ramírez-Reveco, Universidad Austral de Chile, en preparación o revisión (sin DOI aún).</p>
+    <div class="ref"><span class="n">①</span> Ramírez-Reveco A, Gajardo G, Montero MJ, Tadich T, Werner M, Bustamante H, Errazuriz G, Strobel P (2026). <b>Morphological and genetic characterization of the Chilean creole donkey.</b> <em>For consideration in Journal of Animal Breeding and Genetics.</em></div>
+    <div class="ref"><span class="n">②</span> Ramírez-Reveco A, Jerez-Timaure N, Gallo C, Strobel P (2026). <b>Formalizing the Strict Glycolytic Potential (GP<sub>strict</sub>): A Thermodynamic Framework for Postmortem Muscle Energetics.</b></div>
+    <div class="ref"><span class="n">③</span> Ramírez-Reveco A, Gómez Y, Catalán J, Strobel P, Bucci D, Yeste M, Rodríguez-Gil JE (2026). <b>Saturating concentrations of exogenous glucose, regardless of the enantiomeric form, don't play any relevant role in withstanding environmental stress during thawing of frozen equine semen.</b></div>
+    <div class="ref"><span class="n">④</span> Ulloa J, Oyarzun C, Rojas S, Nuñez I, Ulloa O, Ramírez-Reveco A (2026). <b>Tracción animal frente a mecanización motorizada en la pequeña agricultura de subsistencia chilena: Perspectiva histórica.</b> Proyecto Fondef D08I1076.</div>
   </div>
 </section>
 
@@ -379,6 +541,7 @@ document.getElementById('tabs').addEventListener('click',e=>{
   document.getElementById('p-'+b.dataset.t).classList.add('active');
   if(b.dataset.t==='semen'&&!document.getElementById('svg-pow').innerHTML)updPow();
 });
+function goTab(t){const b=document.querySelector('.subtab[data-t="'+t+'"]');if(b)b.click();window.scrollTo({top:0,behavior:'smooth'});}
 function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
 
 /* ================= 1. WAHLUND ================= */
