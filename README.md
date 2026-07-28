@@ -67,10 +67,10 @@ Sistema visual compartido con los demás desarrollos `rijdho`: tipografía displ
 
 Los modelos son **reconstrucciones didácticas simplificadas** para explorar los supuestos de cada trabajo, **no reanálisis de los datos originales**. Las cifras por defecto están calibradas contra los valores publicados; los deslizadores muestran sensibilidad, no resultados oficiales. Detalle y limitaciones de cada modelo en [`METHODS.md`](METHODS.md).
 
-## Cómo citar
-
-Ver [`CITATION.cff`](CITATION.cff).
-
 ## Licencia
 
 MIT — ver [`LICENSE`](LICENSE).
+
+## Cómo citar
+
+Ver [`CITATION.cff`](CITATION.cff).
