@@ -2,9 +2,12 @@
 
 Cuatro simuladores interactivos que convierten en algo **manipulable y visible** las preguntas metodológicas sin resolver de cuatro manuscritos 2026 del grupo A. Ramírez-Reveco (Instituto de Ciencia Animal / Programa Équidos, Universidad Austral de Chile).
 
-En varios casos la herramienta hace, de forma didáctica, la validación que los propios artículos no incluyen.
+En varios casos la herramienta construye, de forma didáctica, una validación que las versiones consultadas de los manuscritos no reportan. Las observaciones críticas se refieren a esas versiones (2026, sin publicar) y pueden no aplicar a versiones posteriores.
 
 **En vivo:** https://rijdho.github.io/criolab/
+
+Interfaz solo en español — decisión deliberada: los manuscritos, su contexto y su audiencia
+son hispanohablantes.
 
 ---
 
@@ -12,12 +15,12 @@ En varios casos la herramienta hace, de forma didáctica, la validación que los
 
 | # | Paper | Lo que el simulador demuestra |
 |---|-------|-------------------------------|
-| ① | **Burro criollo chileno** (JABG 2026) — morfometría + microsatélites | **Efecto Wahlund.** Dos subpoblaciones en perfecto equilibrio Hardy-Weinberg, al mezclarse, producen un F<sub>IS</sub> positivo idéntico a "endogamia" sin una sola cruza consanguínea. Muestra por qué el estudio no puede separar endogamia de estructura. |
+| ① | **Burro criollo chileno** (manuscrito 2026, destinado a JABG) — morfometría + microsatélites | **Efecto Wahlund.** Dos subpoblaciones en perfecto equilibrio Hardy-Weinberg, al mezclarse, producen un F<sub>IS</sub> positivo idéntico a "endogamia" sin una sola cruza consanguínea. Muestra por qué el estudio no puede separar endogamia de estructura. |
 | ② | **Potencial glicolítico estricto (GP<sub>strict</sub>)** — nota teórica | **El falso negativo.** Con estrés pre-faena, la fórmula clásica de Monin & Sellier predice acidificación normal mientras la carne real se va a DFD. Reproduce el caso que el paper afirma pero nunca muestra con datos. |
 | ③ | **Enantiómeros de glucosa en semen equino** (n=4) | **Potencia estadística.** Un Monte Carlo muestra que, con 4 sementales, un resultado "sin diferencias" es esperable por diseño aunque exista un efecto real — no es evidencia de ausencia de efecto. |
 | ④ | **Tracción animal vs mecanización (PNFE)** — Ulloa et al. | **Sensibilidad del VAN.** El titular de +16.796 USD colapsa al mover la tasa de descuento, el precio del diésel o la intensidad de uso de suelo (108%, simulada). El resultado es un supuesto, no un dato. |
 
-La página incluye además una pestaña **Panorama** (introducción + el hilo que conecta los cuatro trabajos) y **Glosario y fuentes** (14 términos y las referencias).
+La página incluye además una pestaña **Panorama** (introducción + el hilo que conecta los cuatro trabajos) y **Glosario y fuentes**: 14 términos, los cuatro manuscritos con su estatus de publicación declarado (a 2026-08-10 ninguno consta publicado ni tiene DOI), y las referencias metodológicas clásicas (Wahlund 1928, Wright 1951, Nei 1977, Monin & Sellier 1985, Cohen 1988, Altman & Bland 1995) con DOI verificado contra CrossRef.
 
 Las fórmulas, entradas y calibración de cada modelo están documentadas en **[`METHODS.md`](METHODS.md)**.
 
@@ -26,8 +29,10 @@ Las fórmulas, entradas y calibración de cada modelo están documentadas en **[
 ## Estructura del repositorio
 
 ```
-index.html          La aplicación completa: 4 simuladores en un solo archivo,
+index.html          La aplicación completa: 4 simuladores en un solo HTML,
                     vanilla JS + SVG, sin build ni dependencias externas.
+fonts/              Inter variable (latin + latin-ext), autohospedada — nunca
+                    un CDN de fuentes.
 METHODS.md          Fórmulas, supuestos y calibración de cada simulador.
 README.md           Este archivo.
 CITATION.cff        Metadatos de citación.
@@ -61,7 +66,7 @@ gh api --method POST repos/<owner>/<repo>/pages -f "source[branch]=main" -f "sou
 
 ## Diseño
 
-Sistema visual compartido con los demás desarrollos `rijdho`: tipografía display (Helvetica Neue 800) + monoespaciada para etiquetas y cifras, paleta violeta, tema claro/oscuro automático con conmutador persistente (`localStorage`). Cero fuentes o scripts externos.
+Sistema visual compartido con los demás desarrollos `rijdho`: Inter (autohospedada, variable, latin + latin-ext) para texto y display + monoespaciada para etiquetas y cifras, paleta violeta `#6D4AFF`/`#8B7BFF`, tema claro/oscuro automático con conmutador persistente (`localStorage`). El borde izquierdo de 3px se reserva para las cajas de veredicto (estado); las tarjetas sin veredicto llevan el hairline de 1px. Cero fuentes o scripts externos.
 
 ## Aviso
 
