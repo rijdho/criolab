@@ -22,6 +22,9 @@ Los cambios relevantes de este proyecto se anotan aquí. El formato sigue
   Altman & Bland) en la pestaña «Glosario y fuentes», con DOI verificado.
 - Línea de autoría en el pie de página: autor · licencia MIT · código fuente · cómo
   citar, con enlaces.
+- Pages despliega ahora vía GitHub Actions (`deploy.yml`) en lugar del builder legacy:
+  la suite de tests gatea cada despliegue y el árbol se sube tal cual, sin
+  procesamiento Jekyll.
 
 ### Corregido
 
