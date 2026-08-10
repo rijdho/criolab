@@ -49,6 +49,20 @@ test('fuentes: 10 referencias, 5 con DOI, y todo enlace externo en lista blanca'
     assert.ok(allow.test(url), `enlace externo fuera de la lista blanca: ${url}`);
 });
 
+test('todo range tiene un value representable con su min/step (el navegador ajusta al paso)', () => {
+  // Cazado en vivo el 2026-08-10: ha declaraba step=0.1 con value=3.18 y el navegador
+  // lo ajustaba a 3.2, descalibrando el VAN inicial (16.919 vs el titular 16.796).
+  const ranges = [...html.matchAll(/<input type="range"[^>]*>/g)].map(m => m[0]);
+  assert.ok(ranges.length >= 10);
+  for (const tag of ranges) {
+    const get = a => parseFloat(new RegExp(`${a}="([^"]+)"`).exec(tag)[1]);
+    const [min, step, value] = [get('min'), get('step'), get('value')];
+    const k = (value - min) / step;
+    assert.ok(Math.abs(k - Math.round(k)) < 1e-9,
+      `value no alcanzable desde min con step: ${tag}`);
+  }
+});
+
 // ---------- familia visual ----------
 
 test('sin CDN de fuentes; las woff2 declaradas existen en el repo', () => {

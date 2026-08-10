@@ -23,6 +23,15 @@ Los cambios relevantes de este proyecto se anotan aquí. El formato sigue
 - Línea de autoría en el pie de página: autor · licencia MIT · código fuente · cómo
   citar, con enlaces.
 
+### Corregido
+
+- El deslizador de hectáreas (④) declaraba `step="0.1"` con `value="3.18"`; el navegador
+  ajusta el valor al paso más cercano (3,2), así que el VAN inicial mostraba 16.919 en
+  lugar del ≈16.813 calibrado contra el titular del manuscrito (16.796). Ahora
+  `step="0.01"`. Cazado comparando la página desplegada en un navegador real contra el
+  smoke test; un test de integridad nuevo cubre la clase completa (todo `range` debe
+  tener un `value` alcanzable desde `min` con su `step`).
+
 ### Cambiado
 
 - `## Cómo citar` pasa a ser la última sección, después de `## Licencia`, siguiendo la
