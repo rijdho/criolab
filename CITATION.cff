@@ -9,14 +9,16 @@ abstract: >-
   potencia estadística en criopreservación de semen equino, y sensibilidad del
   VAN en tracción animal.
 type: software
-# TODO: reemplaza el autor por tu nombre real (given-names / family-names)
 authors:
-  - name: "rijdho"
+  - family-names: "Hartley Belmar"
+    given-names: "Ricardo"
+    alias: rijdho
+    orcid: "https://orcid.org/0000-0001-5058-9309"
 url: "https://rijdho.github.io/criolab/"
 repository-code: "https://github.com/rijdho/criolab"
 license: MIT
-version: "1.0.0"
-date-released: "2026-07-17"
+version: "1.1.0"
+date-released: "2026-08-10"
 keywords:
   - lectura crítica
   - efecto Wahlund

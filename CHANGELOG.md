@@ -6,6 +6,8 @@ Los cambios relevantes de este proyecto se anotan aquí. El formato sigue
 
 ## [Sin publicar]
 
+## [1.1.0] — 2026-08-10
+
 ### Añadido
 
 - Este registro de cambios.
@@ -81,5 +83,6 @@ de Chile).
 - `CITATION.cff` con los metadatos de citación y licencia MIT.
 - Publicación en GitHub Pages (`.nojekyll`).
 
-[Sin publicar]: https://github.com/rijdho/criolab/compare/v1.0.0...HEAD
+[Sin publicar]: https://github.com/rijdho/criolab/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/rijdho/criolab/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/rijdho/criolab/releases/tag/v1.0.0
