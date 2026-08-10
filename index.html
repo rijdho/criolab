@@ -555,6 +555,52 @@ footer a:hover{text-decoration:underline}
 </footer>
 
 <script>
+/* ===== MODELO PURO — funciones sin DOM; valores fijados por tests/model.test.mjs.
+   No mover los marcadores: los tests extraen este bloque del propio index.html. ===== */
+const GPTHR=90, PH_HI=6.4, PH_LO=5.5, DFD=5.9;
+function wahlundModel(pA,pB,w){
+  const hA=2*pA*(1-pA), hB=2*pB*(1-pB);
+  const Ho=w*hA+(1-w)*hB;
+  const pbar=w*pA+(1-w)*pB;
+  const He=2*pbar*(1-pbar);
+  const Fis=He>0?(He-Ho)/He:0;
+  const Fst=He>0?(w*(1-w)*(pA-pB)*(pA-pB))/(pbar*(1-pbar)):0;
+  return {Ho,He,Fis,Fst};
+}
+function stressCouple(stress){
+  return {gly:Math.round(100-92*(stress/100)), lac:Math.round(6+52*(stress/100))};
+}
+function phFromGP(gp){return Math.max(PH_LO,Math.min(PH_HI,PH_LO+(PH_HI-PH_LO)*(1-gp/GPTHR)));}
+function gpValues(gly,lac){
+  const gpS=2*gly, gpC=2*gly+lac;
+  return {gpS,gpC,phTrue:phFromGP(gpS),phPred:phFromGP(gpC)};
+}
+const TCRIT={1:12.706,2:4.303,3:3.182,4:2.776,5:2.571,6:2.447,7:2.365,8:2.306,9:2.262,10:2.228,12:2.179,14:2.145,16:2.120,18:2.101,20:2.086,24:2.064,28:2.048,30:2.042,40:2.021,50:2.009,60:2.000};
+function tcrit(df){if(TCRIT[df])return TCRIT[df];const ks=Object.keys(TCRIT).map(Number).sort((a,b)=>a-b);if(df>=60)return 1.98;let lo=ks[0],hi=ks[ks.length-1];for(let i=0;i<ks.length-1;i++){if(df>=ks[i]&&df<=ks[i+1]){lo=ks[i];hi=ks[i+1];break;}}const t=(df-lo)/(hi-lo);return TCRIT[lo]+t*(TCRIT[hi]-TCRIT[lo]);}
+function randn(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function power(n,delta,sd,iters){
+  if(n<2)return 0; const df=2*n-2, tc=tcrit(df); let rej=0;
+  for(let it=0;it<iters;it++){
+    let s1=0,s2=0,ss1=0,ss2=0;
+    for(let i=0;i<n;i++){const a=randn()*sd, b=delta+randn()*sd; s1+=a;s2+=b;ss1+=a*a;ss2+=b*b;}
+    const m1=s1/n,m2=s2/n;
+    const var1=(ss1-n*m1*m1)/(n-1), var2=(ss2-n*m2*m2)/(n-1);
+    const sp=Math.sqrt(((n-1)*var1+(n-1)*var2)/(2*n-2));
+    const t=(m2-m1)/(sp*Math.sqrt(2/n));
+    if(Math.abs(t)>tc)rej++;
+  }
+  return rej/iters;
+}
+const LOGI=93.63, INIT=391.32, Y6=978.30, Y12=1957;
+function econModel(crop,r,ha,diesel,maint){
+  const annual=crop*ha*diesel+LOGI-maint;
+  const cf=[-INIT];
+  for(let t=1;t<=12;t++){let f=annual; if(t===6)f+=Y6; if(t===12)f+=Y12; cf.push(f);}
+  let npv=0;const disc=cf.map((f,t)=>{const d=f/Math.pow(1+r,t);npv+=d;return d;});
+  return {disc,npv};
+}
+/* ===== FIN MODELO PURO ===== */
+
 /* ---------- theme ---------- */
 function curTheme(){const a=document.documentElement.getAttribute('data-theme');if(a)return a;return matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
 function syncThemeBtn(){document.getElementById('themeBtn').textContent=curTheme()==='dark'?'☀ Claro':'☾ Oscuro';}
@@ -578,12 +624,7 @@ function updBurro(){
   document.getElementById('v-pa').textContent=pA.toFixed(2);
   document.getElementById('v-pb').textContent=pB.toFixed(2);
   document.getElementById('v-w').textContent=Math.round(w*100)+'%';
-  const hA=2*pA*(1-pA), hB=2*pB*(1-pB);
-  const Ho=w*hA+(1-w)*hB;
-  const pbar=w*pA+(1-w)*pB;
-  const He=2*pbar*(1-pbar);
-  const Fis=He>0?(He-Ho)/He:0;
-  const Fst=He>0?(w*(1-w)*(pA-pB)*(pA-pB))/(pbar*(1-pbar)):0;
+  const {Ho,He,Fis,Fst}=wahlundModel(pA,pB,w);
   document.getElementById('m-ho').textContent=Ho.toFixed(3);
   document.getElementById('m-he').textContent=He.toFixed(3);
   document.getElementById('m-fis').textContent=(Fis>=0?'+':'')+Fis.toFixed(3);
@@ -621,23 +662,20 @@ function drawBurro(Ho,He,Fis){
 }
 
 /* ================= 2. GPSTRICT ================= */
-const GPTHR=90, PH_HI=6.4, PH_LO=5.5, DFD=5.9;
 function setStress(v){document.getElementById('stress').value=v;stressDrive();updGP();}
 function stressDrive(){
-  const s=+document.getElementById('stress').value/100;
-  document.getElementById('gly').value=Math.round(100-92*s);
-  document.getElementById('lac').value=Math.round(6+52*s);
+  const c=stressCouple(+document.getElementById('stress').value);
+  document.getElementById('gly').value=c.gly;
+  document.getElementById('lac').value=c.lac;
 }
-function phFromGP(gp){return Math.max(PH_LO,Math.min(PH_HI,PH_LO+(PH_HI-PH_LO)*(1-gp/GPTHR)));}
 function updGP(){
   const gly=+document.getElementById('gly').value, lac=+document.getElementById('lac').value, stress=+document.getElementById('stress').value;
   document.getElementById('v-stress').textContent=stress+'%';
   document.getElementById('v-gly').textContent=gly;
   document.getElementById('v-lac').textContent=lac;
-  const gpS=2*gly, gpC=2*gly+lac;
+  const {gpS,gpC,phTrue,phPred}=gpValues(gly,lac);
   document.getElementById('m-gpc').textContent=gpC;
   document.getElementById('m-gps').textContent=gpS;
-  const phTrue=phFromGP(gpS), phPred=phFromGP(gpC);
   drawGP(phPred,phTrue);
   const v=document.getElementById('ver-gp');
   const trueDFD=phTrue>DFD, predDFD=phPred>DFD;
@@ -671,22 +709,6 @@ function drawGP(phPred,phTrue){
 }
 
 /* ================= 3. POWER ================= */
-const TCRIT={1:12.706,2:4.303,3:3.182,4:2.776,5:2.571,6:2.447,7:2.365,8:2.306,9:2.262,10:2.228,12:2.179,14:2.145,16:2.120,18:2.101,20:2.086,24:2.064,28:2.048,30:2.042,40:2.021,50:2.009,60:2.000};
-function tcrit(df){if(TCRIT[df])return TCRIT[df];const ks=Object.keys(TCRIT).map(Number).sort((a,b)=>a-b);if(df>=60)return 1.98;let lo=ks[0],hi=ks[ks.length-1];for(let i=0;i<ks.length-1;i++){if(df>=ks[i]&&df<=ks[i+1]){lo=ks[i];hi=ks[i+1];break;}}const t=(df-lo)/(hi-lo);return TCRIT[lo]+t*(TCRIT[hi]-TCRIT[lo]);}
-function randn(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
-function power(n,delta,sd,iters){
-  if(n<2)return 0; const df=2*n-2, tc=tcrit(df); let rej=0;
-  for(let it=0;it<iters;it++){
-    let s1=0,s2=0,ss1=0,ss2=0;
-    for(let i=0;i<n;i++){const a=randn()*sd, b=delta+randn()*sd; s1+=a;s2+=b;ss1+=a*a;ss2+=b*b;}
-    const m1=s1/n,m2=s2/n;
-    const var1=(ss1-n*m1*m1)/(n-1), var2=(ss2-n*m2*m2)/(n-1);
-    const sp=Math.sqrt(((n-1)*var1+(n-1)*var2)/(2*n-2));
-    const t=(m2-m1)/(sp*Math.sqrt(2/n));
-    if(Math.abs(t)>tc)rej++;
-  }
-  return rej/iters;
-}
 function updPow(){
   const n=+document.getElementById('n').value, delta=+document.getElementById('delta').value, sd=+document.getElementById('sd').value;
   document.getElementById('v-n').textContent=n;
@@ -732,15 +754,10 @@ function drawPow(curve,nCur,pCur){
 
 /* ================= 4. NPV ================= */
 let CROP=635.89, CROPNAME='Maíz';
-const LOGI=93.63, INIT=391.32, Y6=978.30, Y12=1957;
 function setCrop(v,name){CROP=v;CROPNAME=name;document.getElementById('v-crop').textContent=name+' · '+v.toFixed(2);document.querySelectorAll('[data-crop]').forEach(b=>b.classList.toggle('on',b.textContent.trim()===name));updEcon();}
 function econFlows(){
   const r=+document.getElementById('r').value/100, ha=+document.getElementById('ha').value, diesel=+document.getElementById('diesel').value, maint=+document.getElementById('maint').value;
-  const annual=CROP*ha*diesel+LOGI-maint;
-  const cf=[-INIT];
-  for(let t=1;t<=12;t++){let f=annual; if(t===6)f+=Y6; if(t===12)f+=Y12; cf.push(f);}
-  let npv=0;const disc=cf.map((f,t)=>{const d=f/Math.pow(1+r,t);npv+=d;return d;});
-  return {disc,npv};
+  return econModel(CROP,r,ha,diesel,maint);
 }
 function updEcon(){
   const r=+document.getElementById('r').value, ha=+document.getElementById('ha').value, diesel=+document.getElementById('diesel').value, maint=+document.getElementById('maint').value;

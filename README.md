@@ -33,6 +33,8 @@ index.html          La aplicación completa: 4 simuladores en un solo HTML,
                     vanilla JS + SVG, sin build ni dependencias externas.
 fonts/              Inter variable (latin + latin-ext), autohospedada — nunca
                     un CDN de fuentes.
+tests/              Suite (node --test): modelo puro + integridad estructural.
+package.json        Solo el script de test; sin dependencias.
 METHODS.md          Fórmulas, supuestos y calibración de cada simulador.
 README.md           Este archivo.
 CITATION.cff        Metadatos de citación.
@@ -44,6 +46,23 @@ mapa-critico.drawio Mapa conceptual de los cuatro papers (abrir con diagrams.net
 Todo el proyecto es autocontenido: mover la carpeta a cualquier ubicación no rompe nada, y el historial `git` viaja con ella.
 
 ---
+
+## Tests
+
+Runner de Node, sin dependencias:
+
+```bash
+npm test    # node --test tests/*.test.mjs
+```
+
+Dos capas. `tests/model.test.mjs` fija con valores exactos el modelo puro — Wahlund,
+GP<sub>strict</sub>, potencia, VAN — extrayendo el bloque marcado del propio `index.html`
+(una sola fuente de verdad), e incluye la calibración contra el titular del manuscrito ④
+(16.796 USD ± 100) y una comprobación independiente del VAN por forma cerrada de
+anualidad. `tests/integrity.test.mjs` caza fallos silenciosos (ids muertos, pestañas sin
+panel, clases de veredicto sin CSS, enlaces externos fuera de lista blanca, reglas de la
+familia visual) y ejecuta el script completo con un DOM simulado. La suite se validó
+inyectando defectos deliberados y comprobando que cada uno la hace fallar.
 
 ## Uso local
 

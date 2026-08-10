@@ -9,6 +9,12 @@ Los cambios relevantes de este proyecto se anotan aquí. El formato sigue
 ### Añadido
 
 - Este registro de cambios.
+- Suite de tests con el runner de Node, sin dependencias (`npm test`): valores exactos
+  del modelo puro (Wahlund, GP<sub>strict</sub>, potencia, VAN con verificación
+  independiente por forma cerrada y calibración contra el titular de ④), integridad
+  estructural contra fallos silenciosos, y un smoke test del script completo con DOM
+  simulado. El modelo puro queda delimitado por marcadores en `index.html` y los tests
+  lo extraen de ahí — sin duplicar código. Suite validada por inyección de defectos.
 - Inter variable autohospedada (`fonts/`, latin + latin-ext, la misma pareja woff2 que
   `fair-repo-audit`), en lugar de los stacks de sistema — la tipografía queda alineada
   con la familia visual.

@@ -4,6 +4,10 @@ Documentación técnica de los cuatro simuladores de `index.html`. Toda la lógi
 
 Convención: los identificadores entre paréntesis (`m-fis`, `updGP`, …) corresponden a los `id`/funciones en `index.html`.
 
+Los valores exactos de cada modelo están fijados por `tests/model.test.mjs` (`npm test`),
+que extrae el bloque «MODELO PURO» del propio `index.html` — el código testeado es
+literalmente el que se sirve.
+
 ---
 
 ## ① Burros — efecto Wahlund (`updBurro`)

@@ -1,0 +1,10 @@
+{
+  "name": "criolab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tests del modelo puro y de integridad estructural de index.html (node --test, sin dependencias).",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  }
+}
