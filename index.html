@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>CrioLab · Simuladores críticos</title>
-<meta name="description" content="Herramienta de lectura crítica: cuatro simuladores interactivos sobre preguntas metodológicas abiertas en cuatro manuscritos 2026 del grupo Ramírez-Reveco (UACh). Reconstrucciones didácticas calibradas con los valores reportados; no reanálisis de datos." />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%B4%3C/text%3E%3C/svg%3E" />
+<title>CrioLab</title>
+<meta name="description" content="CrioLab: herramientas de lectura crítica y análisis metodológico en criobiología y reproducción animal. Sin dependencias, sin recursos externos, sin seguimiento." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%8A%3C/text%3E%3C/svg%3E" />
 <script>
   try{const t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}
 </script>
 <style>
-/* Inter autohospedada (misma pareja woff2 que fair-repo-audit / coara-action-planner);
-   nunca un CDN de fuentes: filtra la IP del visitante. Latin + latin-ext cubren ES/EN/DE/FR. */
+/* Inter autohospedada (misma pareja woff2 que el resto de la familia); nunca un CDN de
+   fuentes: filtra la IP del visitante. Latin + latin-ext cubren ES/EN/DE/FR. */
 @font-face{
   font-family:"Inter Variable";font-style:normal;font-display:swap;font-weight:100 900;
   src:url(./fonts/inter-latin-wght-normal.woff2) format("woff2-variations");
@@ -23,786 +23,163 @@
   unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 :root{
-  --paper:#F7F6FB; --surface:#FFFFFF; --surface-2:#F1F0F7; --surface-3:#EAE8F3;
+  --paper:#F7F6FB; --surface:#FFFFFF; --surface-2:#F1F0F7;
   --ink:#17151F; --ink-2:#52505E; --muted:#8A8895; --hairline:#E5E3EF;
   --brand:#6D4AFF; --brand-soft:#EEEBFF;
-  --c1:#6D4AFF; --c2:#E8452F; --c3:#0E9C86; --c4:#C77F0A; --c5:#2563EB; --c6:#DB2777;
-  --ok:#12A150; --warn:#C77F0A; --crit:#DC2626;
   --shadow:0 1px 2px rgba(23,21,31,.06), 0 8px 24px rgba(23,21,31,.05);
   --r:14px; --r-sm:9px;
   --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
-  --disp:"Inter Variable","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
   --body:"Inter Variable",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  /* aliases so the SVG/JS color lookups keep working */
-  --text:var(--ink); --border:var(--hairline); --good:var(--ok); --bad:var(--crit);
-  --accent:var(--brand); --purple:var(--c1);
-  --c-burro:var(--c4); --c-gp:var(--c5); --c-semen:var(--c1); --c-econ:var(--c3);
 }
 @media (prefers-color-scheme: dark){:root{
-  --paper:#121118; --surface:#1B1A22; --surface-2:#232230; --surface-3:#2C2A3A;
+  --paper:#121118; --surface:#1B1A22; --surface-2:#232230;
   --ink:#ECEAF3; --ink-2:#A9A7B5; --muted:#6E6C7C; --hairline:#2C2A38;
   --brand:#8B7BFF; --brand-soft:#221F35;
-  --c1:#8B7BFF; --c2:#F25A47; --c3:#15A188; --c4:#C4862F; --c5:#5B92F5; --c6:#D44E90;
-  --ok:#2CC28A; --warn:#D69A3E; --crit:#F26D6D;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
 }}
 :root[data-theme="dark"]{
-  --paper:#121118; --surface:#1B1A22; --surface-2:#232230; --surface-3:#2C2A3A;
+  --paper:#121118; --surface:#1B1A22; --surface-2:#232230;
   --ink:#ECEAF3; --ink-2:#A9A7B5; --muted:#6E6C7C; --hairline:#2C2A38;
   --brand:#8B7BFF; --brand-soft:#221F35;
-  --c1:#8B7BFF; --c2:#F25A47; --c3:#15A188; --c4:#C4862F; --c5:#5B92F5; --c6:#D44E90;
-  --ok:#2CC28A; --warn:#D69A3E; --crit:#F26D6D;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
 }
 :root[data-theme="light"]{
-  --paper:#F7F6FB; --surface:#FFFFFF; --surface-2:#F1F0F7; --surface-3:#EAE8F3;
+  --paper:#F7F6FB; --surface:#FFFFFF; --surface-2:#F1F0F7;
   --ink:#17151F; --ink-2:#52505E; --muted:#8A8895; --hairline:#E5E3EF;
   --brand:#6D4AFF; --brand-soft:#EEEBFF;
-  --c1:#6D4AFF; --c2:#E8452F; --c3:#0E9C86; --c4:#C77F0A; --c5:#2563EB; --c6:#DB2777;
-  --ok:#12A150; --warn:#C77F0A; --crit:#DC2626;
   --shadow:0 1px 2px rgba(23,21,31,.06), 0 8px 24px rgba(23,21,31,.05);
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-h1,h2,h3{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;margin:0;text-wrap:balance}
-sub{font-size:.72em}
-.wrap{max-width:1180px;margin:0 auto;padding:0 26px}
-.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand)}
-
-/* top bar */
-.cmdbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:14px 0;background:color-mix(in oklab,var(--paper),transparent 8%);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--hairline)}
-.brand-mark{display:flex;align-items:center;gap:11px}
-.brand-glyph{width:32px;height:32px;border-radius:9px;flex:none;position:relative;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand),var(--c6) 55%))}
-.brand-glyph::after{content:"";position:absolute;inset:7px;border-radius:3px;border:1.5px solid rgba(255,255,255,.85);border-right-color:transparent;border-bottom-color:transparent;transform:rotate(45deg)}
-.brand-name{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;font-size:15px;line-height:1.05}
-.brand-sub{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.04em}
-.cmd-spacer{flex:1}
-.icon-btn{height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--hairline);background:var(--surface);color:var(--ink-2);font-family:var(--mono);font-size:12px;cursor:pointer}
-.icon-btn:hover{color:var(--ink);border-color:var(--muted)}
-
-/* hero */
-.hero{padding:40px 0 10px}
-.hero h1{font-size:clamp(28px,4.2vw,44px);line-height:1.03;max-width:20ch;margin:12px 0 0}
-.hero h1 em{font-style:normal;color:var(--brand)}
-.hero p{color:var(--ink-2);max-width:66ch;margin:16px 0 0;font-size:15.5px}
-
-/* subtabs */
-.subtabs{display:flex;flex-wrap:wrap;gap:2px;border-bottom:1px solid var(--hairline);margin:26px 0 0}
-.subtab{font-family:var(--body);font-size:13.5px;font-weight:600;color:var(--ink-2);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;padding:11px 15px;cursor:pointer;display:flex;align-items:center;gap:9px}
-.subtab .dot{width:8px;height:8px;border-radius:50%;background:var(--tc);flex:none;opacity:.55}
-.subtab:hover{color:var(--ink)}
-.subtab.active{color:var(--tc);border-bottom-color:var(--tc)}
-.subtab.active .dot{opacity:1}
-
-/* panels */
-.panel{display:none;padding:30px 0 70px;animation:fade .3s ease-out}
-.panel.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.phead{margin-bottom:22px}
-.phead h2{font-size:24px;margin:9px 0 8px}
-.phead p{color:var(--ink-2);font-size:14.5px;margin:0;max-width:82ch}
-
-.split{display:grid;grid-template-columns:330px 1fr;gap:18px;align-items:start}
-@media(max-width:820px){.split{grid-template-columns:1fr}}
-.card{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r);box-shadow:var(--shadow)}
-.card-h{padding:15px 18px 0}
-.card-h h3{font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600}
-.card-b{padding:15px 18px 18px}
-
-/* controls */
-.field{margin-bottom:18px}
-.field:last-child{margin-bottom:0}
-.field .lrow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:10px}
-.field .lbl{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);line-height:1.35}
-.field .val{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--brand);font-variant-numeric:tabular-nums;white-space:nowrap}
-.field .hint{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:6px;line-height:1.45}
-input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--surface-3);outline:none;margin:0}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--brand);cursor:pointer;border:2px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.2)}
-input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--brand);cursor:pointer;border:2px solid var(--surface)}
-.presets{display:flex;flex-wrap:wrap;gap:7px}
-.preset{font-family:var(--body);background:var(--surface-2);border:1px solid var(--hairline);color:var(--ink-2);border-radius:8px;padding:6px 11px;font-size:12px;font-weight:500;cursor:pointer}
-.preset:hover{border-color:var(--brand);color:var(--brand)}
-.preset.on{background:var(--brand);color:#fff;border-color:var(--brand)}
-.divider{border-top:1px solid var(--hairline);margin:16px 0 0;padding-top:14px;font-family:var(--mono);font-size:10.5px;color:var(--muted);line-height:1.55}
-.divider b{color:var(--ink-2);font-weight:600}
-
-/* metric tiles */
-.mtiles{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:18px}
-.mtile{flex:1;min-width:130px;background:var(--surface-2);border-radius:11px;padding:13px 15px}
-.mtile .k{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);line-height:1.4}
-.mtile .v{font-family:var(--disp);font-weight:800;font-size:27px;letter-spacing:-.03em;margin-top:5px;font-variant-numeric:tabular-nums;line-height:1}
-.mtile .u{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px}
-
-svg{display:block;width:100%;height:auto;overflow:visible;margin:2px 0}
-.svgtext{fill:var(--ink);font-family:var(--mono)}
-.svgmuted{fill:var(--muted);font-family:var(--mono)}
-
-/* verdict */
-.verdict{border-left:3px solid currentColor;border-radius:var(--r-sm);padding:13px 15px;font-size:13.5px;line-height:1.55;margin-top:16px}
-.verdict b{font-weight:700}
-.v-good{color:var(--ok);background:color-mix(in srgb,var(--ok) 11%,transparent)}
-.v-warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent)}
-.v-bad{color:var(--crit);background:color-mix(in srgb,var(--crit) 11%,transparent)}
-.verdict b, .verdict sub{color:inherit}
-
-/* term tooltip (glosario inline) */
-.term{border-bottom:1.5px dotted var(--muted);cursor:help;position:relative}
-.term:hover::after{content:attr(data-tip);position:absolute;left:0;bottom:calc(100% + 9px);width:250px;background:var(--ink);color:var(--paper);font-family:var(--body);font-weight:400;font-size:12px;line-height:1.45;letter-spacing:0;text-transform:none;padding:9px 11px;border-radius:9px;box-shadow:var(--shadow);z-index:50}
-.term:hover::before{content:"";position:absolute;left:14px;bottom:calc(100% + 3px);border:6px solid transparent;border-top-color:var(--ink);z-index:50}
-/* encuadre 3-part */
-.frame{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:2px 0 24px}
-@media(max-width:760px){.frame{grid-template-columns:1fr}}
-.frame .f{background:var(--surface);border:1px solid var(--hairline);border-radius:11px;padding:13px 15px;box-shadow:var(--shadow)}
-.frame .f .k{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.frame .f p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.5}
-.frame .f.paper .k{color:var(--ink-2)} .frame .f.q .k{color:var(--crit)} .frame .f.do .k{color:var(--brand)}
-/* figure caption */
-.figcap{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.55;margin-top:9px}
-/* panorama overview cards */
-.ov-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:8px 0 8px}
-@media(max-width:760px){.ov-grid{grid-template-columns:1fr}}
-.ov{text-align:left;background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);cursor:pointer;color:inherit;display:block;width:100%;font-family:var(--body)}
-.ov:hover{border-color:var(--tc);transform:translateY(-2px);transition:.15s}
-.ov .num{font-family:var(--mono);font-size:11px;color:var(--tc);letter-spacing:.06em}
-.ov h4{font-family:var(--disp);font-weight:800;font-size:16px;margin:4px 0 6px;letter-spacing:-.01em}
-.ov p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.5}
-.ov .cta{font-family:var(--mono);font-size:11px;color:var(--tc);margin-top:9px;display:inline-block}
-.blk{margin:30px 0 0}
-.blk h3{font-size:17px;margin:0 0 6px}
-.blk p{color:var(--ink-2);font-size:14px;margin:0 0 12px;max-width:78ch}
-.threads{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:760px){.threads{grid-template-columns:1fr}}
-.thread{background:var(--surface-2);border-radius:12px;padding:15px 17px}
-.thread .t{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--brand);margin-bottom:6px}
-.thread p{font-size:13px;color:var(--ink-2);margin:0;line-height:1.55}
-.oq{list-style:none;padding:0;margin:12px 0 0}
-.oq li{position:relative;padding:9px 0 9px 22px;border-top:1px solid var(--hairline);font-size:13.5px;color:var(--ink-2);line-height:1.5}
-.oq li::before{content:"→";position:absolute;left:0;color:var(--brand);font-family:var(--mono)}
-/* glossary + refs */
-.glo{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:2px 0 0}
-@media(max-width:760px){.glo{grid-template-columns:1fr}}
-.gterm{background:var(--surface);border:1px solid var(--hairline);border-radius:11px;padding:13px 15px;box-shadow:var(--shadow)}
-.gterm dt{font-family:var(--disp);font-weight:800;font-size:14px;margin-bottom:3px}
-.gterm dd{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.5}
-.ref{padding:13px 0;border-top:1px solid var(--hairline);font-size:13px;color:var(--ink-2);line-height:1.55}
-.ref .n{font-family:var(--mono);color:var(--brand);margin-right:8px;font-weight:600}
-.ref b{color:var(--ink);font-weight:700}
-footer{border-top:1px solid var(--hairline);padding:24px 0 46px;color:var(--muted);font-family:var(--mono);font-size:11px;line-height:1.7}
-footer b{color:var(--ink-2)}
-footer a{color:var(--brand);text-decoration:none}
-footer a:hover{text-decoration:underline}
-.ref a{color:var(--brand);text-decoration:none}
-.ref a:hover{text-decoration:underline}
-.tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted);vertical-align:middle;margin-left:8px;letter-spacing:.03em}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+body{
+  margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  line-height:1.6;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+header{padding:56px 0 8px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin:0 0 10px}
+h1{font-size:clamp(34px,6vw,46px);line-height:1.1;margin:0 0 14px;letter-spacing:-.02em}
+.lede{font-size:18px;color:var(--ink-2);margin:0 0 6px;max-width:62ch}
+#theme{
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--surface);color:var(--ink-2);border:1px solid var(--hairline);
+  border-radius:var(--r-sm);padding:8px 12px;cursor:pointer;flex:none;
+}
+#theme:hover{border-color:var(--brand);color:var(--brand)}
+h2{font-size:13px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin:44px 0 16px;font-weight:600}
+.card{
+  display:block;text-decoration:none;color:inherit;background:var(--surface);
+  border:1px solid var(--hairline);border-radius:var(--r);padding:24px;
+  box-shadow:var(--shadow);transition:border-color .15s, transform .15s;
+}
+.card:hover{border-color:var(--brand);transform:translateY(-1px)}
+.card h3{margin:0 0 8px;font-size:21px;letter-spacing:-.01em}
+.card p{margin:0 0 14px;color:var(--ink-2);font-size:15px}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--ink-2);
+  background:var(--surface-2);border:1px solid var(--hairline);
+  border-radius:999px;padding:3px 10px;
+}
+.tag.on{background:var(--brand-soft);border-color:transparent;color:var(--brand)}
+.note{
+  background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--r);
+  padding:18px 22px;color:var(--ink-2);font-size:15px;
+}
+.note p{margin:0}
+.about p{color:var(--ink-2);max-width:68ch}
+.about strong{color:var(--ink)}
+footer{
+  margin:56px 0 40px;padding-top:22px;border-top:1px solid var(--hairline);
+  font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 14px;
+}
+footer a{color:var(--ink-2)}
+a{color:var(--brand)}
+@media (max-width:560px){header{padding-top:36px}}
 </style>
 </head>
 <body>
-
-<div class="cmdbar">
-  <div class="wrap" style="display:flex;align-items:center;gap:14px;width:100%">
-    <div class="brand-mark">
-      <div class="brand-glyph"></div>
-      <div>
-        <div class="brand-name">CrioLab</div>
-        <div class="brand-sub">LECTURA CRÍTICA · RAMÍREZ-REVECO · UACH · 2026</div>
-      </div>
-    </div>
-    <div class="cmd-spacer"></div>
-    <button class="icon-btn" id="themeBtn" onclick="toggleTheme()">☾ Oscuro</button>
-  </div>
-</div>
-
 <div class="wrap">
-  <div class="hero">
-    <span class="eyebrow">Lectura crítica · cuatro manuscritos 2026</span>
-    <h1>Simuladores críticos <span class="tag">4 manuscritos</span></h1>
-    <p>Herramienta de lectura crítica sobre cuatro manuscritos de 2026 del grupo A. Ramírez-Reveco (Instituto de Ciencia Animal, Universidad Austral de Chile). Cada simulador aísla una pregunta metodológica que el texto consultado deja abierta y la vuelve <em>manipulable</em> mediante una reconstrucción didáctica calibrada con los valores que el propio manuscrito reporta. No es un reanálisis de los datos originales, y las observaciones se refieren a las versiones consultadas, aún sin publicar.</p>
-  </div>
 
-  <nav class="subtabs" id="tabs">
-    <button class="subtab active" data-t="panorama" style="--tc:var(--brand)"><span class="dot"></span>⌂ Panorama</button>
-    <button class="subtab" data-t="burro" style="--tc:var(--c-burro)"><span class="dot"></span>① Burros · Wahlund</button>
-    <button class="subtab" data-t="gp" style="--tc:var(--c-gp)"><span class="dot"></span>② GPstrict · carne DFD</button>
-    <button class="subtab" data-t="semen" style="--tc:var(--c-semen)"><span class="dot"></span>③ Semen · potencia</button>
-    <button class="subtab" data-t="econ" style="--tc:var(--c-econ)"><span class="dot"></span>④ Economía · VAN</button>
-    <button class="subtab" data-t="fuentes" style="--tc:var(--c6)"><span class="dot"></span>Glosario y fuentes</button>
-  </nav>
+<header>
+  <div>
+    <p class="eyebrow">Universidad Austral de Chile · lectura crítica</p>
+    <h1>CrioLab</h1>
+  </div>
+  <button id="theme" type="button" aria-label="Cambiar tema">Tema</button>
+</header>
 
-<!-- ============ 0. PANORAMA ============ -->
-<section class="panel active" id="p-panorama">
-  <div class="phead">
-    <span class="eyebrow">Qué es esto · alcance y método</span>
-    <h2>Cuatro manuscritos, cuatro preguntas metodológicas abiertas</h2>
-    <p>Para cada manuscrito, el simulador reconstruye de forma simplificada el modelo o el diseño en cuestión y muestra qué es matemáticamente posible bajo sus propios supuestos: qué produce un efecto Wahlund, cuándo diverge una fórmula, cuánta potencia tiene un diseño, cuánto se mueve un VAN. Cada afirmación sobre un manuscrito se limita a lo que su texto reporta — o a lo que no reporta — y las referencias completas están en la pestaña <b>Glosario y fuentes</b>; las fórmulas, la calibración y las limitaciones de cada modelo, en <a href="https://github.com/rijdho/criolab/blob/main/METHODS.md" style="color:var(--brand)">METHODS.md</a>. Empieza por cualquiera de las cuatro tarjetas.</p>
-  </div>
+<p class="lede">
+  Herramientas abiertas de lectura crítica y análisis metodológico en criobiología y
+  reproducción animal. Cada una se sirve como una página autocontenida: sin build, sin
+  dependencias, sin recursos externos y sin seguimiento de ninguna clase.
+</p>
 
-  <div class="ov-grid">
-    <button class="ov" style="--tc:var(--c-burro)" onclick="goTab('burro')">
-      <span class="num">① BURROS · GENÉTICA</span>
-      <h4>¿Endogamia o estructura?</h4>
-      <p>El manuscrito reporta F<sub>IS</sub>=+0,18 y lo interpreta como endogamia. El simulador muestra que dos subpoblaciones en equilibrio Hardy-Weinberg producen, al mezclarse, un déficit de esa magnitud sin cruza consanguínea alguna: el efecto Wahlund (Wahlund, 1928).</p>
-      <span class="cta">Abrir simulador →</span>
-    </button>
-    <button class="ov" style="--tc:var(--c-gp)" onclick="goTab('gp')">
-      <span class="num">② GPSTRICT · CARNE</span>
-      <h4>El falso negativo</h4>
-      <p>La nota postula que la fórmula clásica (Monin &amp; Sellier, 1985) puede predecir acidificación normal en una carne que termina DFD, pero no lo ilustra con datos. El simulador construye ese caso bajo el propio modelo del manuscrito.</p>
-      <span class="cta">Abrir simulador →</span>
-    </button>
-    <button class="ov" style="--tc:var(--c-semen)" onclick="goTab('semen')">
-      <span class="num">③ SEMEN · ESTADÍSTICA</span>
-      <h4>¿Nulo real o sin potencia?</h4>
-      <p>El estudio concluye "sin diferencias significativas" con n=4 sementales. Un Monte Carlo estima la potencia de ese diseño: con efectos plausibles resulta baja, y un nulo es entonces esperable — ausencia de evidencia no es evidencia de ausencia.</p>
-      <span class="cta">Abrir simulador →</span>
-    </button>
-    <button class="ov" style="--tc:var(--c-econ)" onclick="goTab('econ')">
-      <span class="num">④ ECONOMÍA · VAN</span>
-      <h4>¿Qué tan sensible es el VAN?</h4>
-      <p>El VAN reportado de +16.796 USD (maíz) descansa en una TSD del 6%, precios de diésel de 2011 y una intensidad de uso del 108% que el propio texto describe como simulada. El simulador cuantifica cuánto varía al mover cada supuesto.</p>
-      <span class="cta">Abrir simulador →</span>
-    </button>
-  </div>
+<h2>Líneas</h2>
 
-  <div class="blk">
-    <h3>Cómo leer la herramienta</h3>
-    <p>Cada simulador tiene un color (el punto de su pestaña). A la izquierda, los <b>controles</b>: mueve los deslizadores. A la derecha, los <b>resultados</b>, un gráfico y un veredicto que se actualizan al instante. Las palabras con <span class="term" data-tip="Así se ven los términos con definición: pasa el cursor por encima.">línea punteada</span> muestran su definición al pasar el cursor; el glosario completo está en la última pestaña. Arriba a la derecha puedes cambiar entre tema claro y oscuro.</p>
+<a class="card" href="./simuladores/">
+  <h3>Simuladores críticos</h3>
+  <p>
+    Cuatro simuladores interactivos que vuelven manipulables las preguntas metodológicas sin
+    resolver de cuatro manuscritos 2026: el efecto Wahlund confundido con endogamia, el falso
+    negativo del potencial glicolítico, la potencia estadística de un diseño con n = 4, y la
+    fragilidad de un VAN presentado como dato.
+  </p>
+  <div class="tags">
+    <span class="tag on">Disponible</span>
+    <span class="tag">Efecto Wahlund</span>
+    <span class="tag">GP<sub>strict</sub></span>
+    <span class="tag">Potencia</span>
+    <span class="tag">VAN</span>
   </div>
+</a>
 
-  <div class="blk">
-    <h3>El hilo que los conecta</h3>
-    <p>Dos hilos temáticos emergen de la lectura conjunta. Son observaciones de quien construyó esta herramienta sobre las versiones consultadas — no afirmaciones de los manuscritos, que no se citan entre sí.</p>
-    <div class="threads">
-      <div class="thread">
-        <div class="t">Hilo équido</div>
-        <p>Burros (①), semen equino (③) y caballos de tiro (④) son, en el fondo, el mismo recurso animal mirado desde la genética, la reproducción y la economía — pero se estudian en silos, sin un marco integrador.</p>
-      </div>
-      <div class="thread">
-        <div class="t">Hilo bioenergético · minimalismo metabólico</div>
-        <p>GPstrict (②) y el semen hipometabólico (③) comparten una misma idea nunca enunciada como programa: <em>menos sustrato no es peor</em>. El músculo se cierra termodinámicamente; el espermatozoide sobrevive con mínima energía.</p>
-      </div>
-    </div>
-    <ul class="oq">
-      <li>La criopreservación (③) es justo la herramienta que el "manejo genético urgente" de ① necesitaría — y nadie tiende ese puente.</li>
-      <li>Los burros ferales del altiplano —los verdaderamente salvajes— nunca se caracterizan, pese a ser el punto de comparación clave.</li>
-      <li>Ninguna de las tres piezas equinas dialoga con las otras dentro del propio corpus.</li>
-      <li>Las declaraciones de uso de IA son inconsistentes entre los cuatro artículos (de "ninguna" a Grammarly, Claude y un LLM de Google).</li>
-    </ul>
-  </div>
-</section>
+<h2>En preparación</h2>
 
-<!-- ============ 1. WAHLUND ============ -->
-<section class="panel" id="p-burro">
-  <div class="phead">
-    <span class="eyebrow" style="color:var(--c-burro)">① Burro criollo chileno · JABG 2026</span>
-    <h2>¿Endogamia… o estructura disfrazada? El efecto Wahlund</h2>
-  </div>
-  <div class="frame">
-    <div class="f paper"><div class="k">El paper dice</div><p>Un <span class="term" data-tip="Índice de fijación: mide el exceso o déficit de heterocigotos respecto a Hardy-Weinberg. Positivo = menos heterocigotos de lo esperado.">F<sub>IS</sub></span> de +0,18 → "endogamia moderada" en el burro criollo, y pide manejo genético urgente.</p></div>
-    <div class="f q"><div class="k">La pregunta abierta</div><p>¿Ese déficit es endogamia real, o solo mezcla de rebaños de distinto origen (<span class="term" data-tip="Efecto Wahlund: agrupar subpoblaciones con frecuencias alélicas distintas produce un déficit aparente de heterocigotos, aunque nadie sea endogámico.">efecto Wahlund</span>)? El estudio no los separa.</p></div>
-    <div class="f do"><div class="k">Qué haces aquí</div><p>Mueve las frecuencias de dos subpoblaciones —ambas sin endogamia, en equilibrio Hardy-Weinberg— y observa el F<sub>IS</sub> que aparece solo por mezclarlas.</p></div>
-  </div>
-  <div class="split">
-    <div class="card">
-      <div class="card-h"><h3>Controles</h3></div>
-      <div class="card-b">
-        <div class="field">
-          <div class="lrow"><span class="lbl">Frecuencia alélica · subpobl. A</span><span class="val" id="v-pa">0.80</span></div>
-          <input type="range" id="pa" min="0.05" max="0.95" step="0.01" value="0.80" oninput="updBurro()">
-        </div>
-        <div class="field">
-          <div class="lrow"><span class="lbl">Frecuencia alélica · subpobl. B</span><span class="val" id="v-pb">0.20</span></div>
-          <input type="range" id="pb" min="0.05" max="0.95" step="0.01" value="0.20" oninput="updBurro()">
-          <div class="hint">Cuanto más difieren A y B, mayor la estructura (F<sub>ST</sub>).</div>
-        </div>
-        <div class="field">
-          <div class="lrow"><span class="lbl">Proporción muestreada de A</span><span class="val" id="v-w">50%</span></div>
-          <input type="range" id="w" min="0.05" max="0.95" step="0.01" value="0.5" oninput="updBurro()">
-        </div>
-        <div class="field presets">
-          <button class="preset" onclick="setBurro(0.8,0.2,0.5)">Dos rebaños distintos</button>
-          <button class="preset" onclick="setBurro(0.5,0.5,0.5)">Sin estructura</button>
-          <button class="preset" onclick="setBurro(0.9,0.15,0.5)">Estructura fuerte</button>
-        </div>
-        <div class="divider"><b>Modelo:</b> un locus bialélico, cada subpoblación en HWE. Observado = heterocigosis media dentro de subpoblaciones; Esperado = el que asumirías si la muestra fuese una sola población panmíctica. F<sub>IS</sub> = (H<sub>e</sub>−H<sub>o</sub>)/H<sub>e</sub>.</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-b">
-        <div class="mtiles">
-          <div class="mtile"><div class="k">H₀ observada</div><div class="v" id="m-ho" style="color:var(--warn)">—</div></div>
-          <div class="mtile"><div class="k">Hₑ esperada</div><div class="v" id="m-he" style="color:var(--ok)">—</div></div>
-          <div class="mtile"><div class="k">F<sub>IS</sub> aparente</div><div class="v" id="m-fis" style="color:var(--crit)">—</div></div>
-          <div class="mtile"><div class="k">F<sub>ST</sub> estructura</div><div class="v" id="m-fst" style="color:var(--c5)">—</div></div>
-        </div>
-        <svg id="svg-burro" viewBox="0 0 520 220"></svg>
-        <div class="figcap">Barras: heterocigosis observada (media dentro de subpoblaciones) vs esperada si todo fuese una sola población. La línea roja marca el "déficit" que se confunde con endogamia.</div>
-        <div class="verdict" id="ver-burro"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 2. GPSTRICT ============ -->
-<section class="panel" id="p-gp">
-  <div class="phead">
-    <span class="eyebrow" style="color:var(--c-gp)">② Potencial glicolítico estricto · nota teórica</span>
-    <h2>El falso negativo que el paper afirma pero nunca muestra</h2>
-  </div>
-  <div class="frame">
-    <div class="f paper"><div class="k">El paper dice</div><p>La fórmula clásica de <span class="term" data-tip="Potencial glicolítico (Monin &amp; Sellier, 1985): estima la capacidad de acidificación del músculo post-mortem sumando reservas de carbohidratos y lactato.">GP</span> infla el resultado con el lactato basal; propone GP<sub>strict</sub> (sin ese lactato) como la métrica correcta.</p></div>
-    <div class="f q"><div class="k">La pregunta abierta</div><p>Nunca se demuestra con datos que GP<sub>strict</sub> prediga mejor el pH final ni que la clásica falle. ¿Cuándo importa de verdad?</p></div>
-    <div class="f do"><div class="k">Qué haces aquí</div><p>Sube el estrés pre-faena y mira cómo la fórmula clásica "aprueba" una carne que en realidad es <span class="term" data-tip="Carne DFD (Dark, Firm, Dry): defecto de calidad por pH final alto (&gt;5,9) tras agotarse el glucógeno por estrés antes de la faena.">DFD</span>.</p></div>
-  </div>
-  <div class="split">
-    <div class="card">
-      <div class="card-h"><h3>Controles</h3></div>
-      <div class="card-b">
-        <div class="field">
-          <div class="lrow"><span class="lbl">Estrés / ayuno pre-faena</span><span class="val" id="v-stress">10%</span></div>
-          <input type="range" id="stress" min="0" max="100" step="1" value="10" oninput="stressDrive();updGP()">
-          <div class="hint">Acopla glucógeno ↓ y lactato basal ↑.</div>
-        </div>
-        <div class="field">
-          <div class="lrow"><span class="lbl">Glucógeno + G6P + glucosa (µmol/g)</span><span class="val" id="v-gly">92</span></div>
-          <input type="range" id="gly" min="8" max="105" step="1" value="92" oninput="updGP()">
-        </div>
-        <div class="field">
-          <div class="lrow"><span class="lbl">Lactato basal LC₀ (µmol/g)</span><span class="val" id="v-lac">8</span></div>
-          <input type="range" id="lac" min="0" max="60" step="1" value="8" oninput="updGP()">
-        </div>
-        <div class="field presets">
-          <button class="preset" onclick="setStress(8)">Descansado</button>
-          <button class="preset" onclick="setStress(60)">Estrés moderado</button>
-          <button class="preset" onclick="setStress(92)">Estrés agudo</button>
-        </div>
-        <div class="divider"><b>Modelo:</b> GP<sub>clásico</sub>=2·(glucóg.+G6P+glu)+lactato; GP<sub>strict</sub>=2·(glucóg.+G6P+glu). El pH final <b>real</b> lo fija sólo el sustrato transformable (GP<sub>strict</sub>); el pH que "predice" la fórmula clásica usa la misma relación pero con el GP inflado por el lactato. DFD si pH<sub>u</sub> &gt; 5,9.</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-b">
-        <div class="mtiles">
-          <div class="mtile"><div class="k">GP clásico</div><div class="v" id="m-gpc" style="color:var(--c-gp)">—</div><div class="u">µmol/g</div></div>
-          <div class="mtile"><div class="k">GP strict</div><div class="v" id="m-gps" style="color:var(--c1)">—</div><div class="u">µmol/g</div></div>
-        </div>
-        <svg id="svg-gp" viewBox="0 0 520 150"></svg>
-        <div class="figcap">Regla de pH final. El triángulo azul es lo que predice la fórmula clásica; el violeta, el pH real (GP<sub>strict</sub>). Si el violeta cae en la zona sombreada (&gt;5,9), la carne es DFD.</div>
-        <div class="verdict" id="ver-gp"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 3. POWER ============ -->
-<section class="panel" id="p-semen">
-  <div class="phead">
-    <span class="eyebrow" style="color:var(--c-semen)">③ Enantiómeros de glucosa en semen · n=4</span>
-    <h2>"Sin diferencias significativas"… ¿real o falta de potencia?</h2>
-  </div>
-  <div class="frame">
-    <div class="f paper"><div class="k">El paper dice</div><p>La glucosa exógena no mejora el semen equino post-descongelación: sin diferencias significativas entre tratamientos (n=4 sementales).</p></div>
-    <div class="f q"><div class="k">La pregunta abierta</div><p>¿Es ausencia real de efecto, o falta de <span class="term" data-tip="Potencia estadística: probabilidad de detectar un efecto que sí existe. Con muestras pequeñas es baja, y un resultado no significativo se vuelve ambiguo.">potencia</span>? Con n=4 un test casi no puede detectar nada.</p></div>
-    <div class="f do"><div class="k">Qué haces aquí</div><p>Fija un efecto real y comprueba, con miles de experimentos simulados (<span class="term" data-tip="Monte Carlo: se genera aleatoriamente el experimento muchas veces para estimar con qué frecuencia daría significativo.">Monte Carlo</span>), con qué frecuencia el test lo detectaría según el tamaño de muestra.</p></div>
-  </div>
-  <div class="split">
-    <div class="card">
-      <div class="card-h"><h3>Controles</h3></div>
-      <div class="card-b">
-        <div class="field">
-          <div class="lrow"><span class="lbl">n por grupo</span><span class="val" id="v-n">4</span></div>
-          <input type="range" id="n" min="2" max="24" step="1" value="4" oninput="updPow()">
-          <div class="hint">El paper usó n = 4.</div>
-        </div>
-        <div class="field">
-          <div class="lrow"><span class="lbl">Diferencia real asumida (motilidad, %)</span><span class="val" id="v-delta">10</span></div>
-          <input type="range" id="delta" min="2" max="25" step="1" value="10" oninput="updPow()">
-        </div>
-        <div class="field">
-          <div class="lrow"><span class="lbl">Desviación estándar (%)</span><span class="val" id="v-sd">8</span></div>
-          <input type="range" id="sd" min="3" max="18" step="1" value="8" oninput="updPow()">
-          <div class="hint">≈ la dispersión observada en el paper (SD ~8–10%).</div>
-        </div>
-        <div class="divider"><b>Modelo:</b> test t de dos muestras (α=0,05 bilateral), 2000 réplicas Monte Carlo por punto. La <b>potencia</b> es la fracción de experimentos simulados que alcanzan significación existiendo el efecto.</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-b">
-        <div class="mtiles">
-          <div class="mtile"><div class="k">Potencia con n actual</div><div class="v" id="m-pow">—</div></div>
-          <div class="mtile"><div class="k">n para 80% de potencia</div><div class="v" id="m-nneed">—</div></div>
-        </div>
-        <svg id="svg-pow" viewBox="0 0 520 220"></svg>
-        <div class="figcap">Curva de potencia según n por grupo. El punto marca tu n actual; la línea al 80% es el mínimo convencional. Por debajo de ella, un resultado nulo no es concluyente.</div>
-        <div class="verdict" id="ver-pow"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 4. NPV ============ -->
-<section class="panel" id="p-econ">
-  <div class="phead">
-    <span class="eyebrow" style="color:var(--c-econ)">④ Tracción animal vs mecanización · PNFE</span>
-    <h2>¿Qué tan frágil es el VAN de +16.796 USD?</h2>
-  </div>
-  <div class="frame">
-    <div class="f paper"><div class="k">El paper dice</div><p>El caballo de tiro genera un <span class="term" data-tip="Valor Actual Neto: suma de los flujos futuros descontados menos la inversión. Positivo = el proyecto crea valor.">VAN</span> de +16.796 USD (escenario maíz); es un activo estratégico para el minifundio.</p></div>
-    <div class="f q"><div class="k">La pregunta abierta</div><p>El resultado depende de supuestos fijos: <span class="term" data-tip="Tasa Social de Descuento: tasa con que se traen los flujos futuros a valor presente. Cuanto más alta, menor el VAN.">TSD</span> del 6%, diésel de 2011 y una intensidad de uso de suelo del 108% simulada. ¿Qué tan robusto es?</p></div>
-    <div class="f do"><div class="k">Qué haces aquí</div><p>Mueve esos supuestos y observa cuánto del VAN sobrevive.</p></div>
-  </div>
-  <div class="split">
-    <div class="card">
-      <div class="card-h"><h3>Controles</h3></div>
-      <div class="card-b">
-        <div class="field">
-          <div class="lrow"><span class="lbl">Cultivo (ahorro USD/ha)</span><span class="val" id="v-crop">Maíz · 635,89</span></div>
-          <div class="presets" style="margin-top:4px">
-            <button class="preset on" data-crop onclick="setCrop(635.89,'Maíz')">Maíz</button>
-            <button class="preset" data-crop onclick="setCrop(348.67,'Arroz')">Arroz</button>
-            <button class="preset" data-crop onclick="setCrop(228.92,'Porotos')">Porotos</button>
-            <button class="preset" data-crop onclick="setCrop(156.53,'Trigo')">Trigo</button>
-          </div>
-        </div>
-        <div class="field">
-          <div class="lrow"><span class="lbl">Tasa social de descuento</span><span class="val" id="v-r">6.0%</span></div>
-          <input type="range" id="r" min="2" max="15" step="0.5" value="6" oninput="updEcon()">
-          <div class="hint">El 6% es la tasa que el manuscrito toma del sistema de inversiones; el análisis la mantiene fija.</div>
-        </div>
-        <div class="field">
-          <div class="lrow"><span class="lbl">ha trabajadas con tracción / año</span><span class="val" id="v-ha">3.18</span></div>
-          <input type="range" id="ha" min="0.5" max="6" step="0.01" value="3.18" oninput="updEcon()">
-          <div class="hint">La intensidad "108%" del paper es un escenario simulado.</div>
-        </div>
-        <div class="field">
-          <div class="lrow"><span class="lbl">Factor precio diésel</span><span class="val" id="v-diesel">1.00×</span></div>
-          <input type="range" id="diesel" min="0.5" max="2" step="0.05" value="1" oninput="updEcon()">
-          <div class="hint">Sube el diésel → sube el costo mecanizado evitado → más valor del caballo.</div>
-        </div>
-        <div class="field">
-          <div class="lrow"><span class="lbl">Costo de mantención anual (USD)</span><span class="val" id="v-maint">262</span></div>
-          <input type="range" id="maint" min="120" max="450" step="1" value="262" oninput="updEcon()">
-        </div>
-        <div class="divider"><b>Modelo:</b> flujo descontado a 12 años. Reconstrucción simplificada calibrada para reproducir el VAN de maíz del paper con los valores por defecto; los deslizadores muestran la sensibilidad, no cifras oficiales.</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-b">
-        <div class="mtiles">
-          <div class="mtile"><div class="k">VAN (12 años)</div><div class="v" id="m-van">—</div><div class="u">USD</div></div>
-          <div class="mtile"><div class="k">vs. paper (16.796)</div><div class="v" id="m-vandelta" style="font-size:20px">—</div></div>
-        </div>
-        <svg id="svg-econ" viewBox="0 0 520 200"></svg>
-        <div class="figcap">Flujo de caja descontado por año (0–12). Verde = ingreso neto, rojo = egreso. El VAN es la suma de todas las barras.</div>
-        <div class="verdict" id="ver-econ"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 5. GLOSARIO Y FUENTES ============ -->
-<section class="panel" id="p-fuentes">
-  <div class="phead">
-    <span class="eyebrow" style="color:var(--c6)">Glosario y fuentes</span>
-    <h2>Términos clave, los cuatro manuscritos y las fuentes metodológicas</h2>
-    <p>Definiciones breves de los conceptos que aparecen en los simuladores, la referencia de cada manuscrito con su estatus de publicación, y las fuentes clásicas en que se apoyan los modelos.</p>
-  </div>
-  <div class="blk" style="margin-top:6px">
-    <h3>Glosario</h3>
-    <div class="glo">
-      <div class="gterm"><dl><dt>Heterocigosis (H₀ / Hₑ)</dt><dd>Proporción de individuos con dos alelos distintos en un locus. Observada (real) frente a esperada bajo equilibrio Hardy-Weinberg.</dd></dl></div>
-      <div class="gterm"><dl><dt>Hardy-Weinberg (HWE)</dt><dd>Frecuencias genotípicas esperadas en una población ideal sin selección, migración, deriva ni endogamia.</dd></dl></div>
-      <div class="gterm"><dl><dt>F<sub>IS</sub> · índice de fijación</dt><dd>Exceso o déficit de heterocigotos respecto a HWE. Positivo = menos heterocigotos de lo esperado (endogamia <em>o</em> estructura).</dd></dl></div>
-      <div class="gterm"><dl><dt>Efecto Wahlund</dt><dd>Déficit aparente de heterocigotos que surge al agrupar subpoblaciones con frecuencias alélicas distintas, sin que exista endogamia (Wahlund, 1928).</dd></dl></div>
-      <div class="gterm"><dl><dt>F<sub>ST</sub></dt><dd>Grado de diferenciación genética entre subpoblaciones (0 = idénticas; 1 = fijadas para alelos distintos).</dd></dl></div>
-      <div class="gterm"><dl><dt>Microsatélite (STR)</dt><dd>Marcador de ADN repetitivo y muy variable, usado para medir diversidad y parentesco.</dd></dl></div>
-      <div class="gterm"><dl><dt>Potencial glicolítico (GP)</dt><dd>Estimación de la capacidad de acidificación del músculo post-mortem (Monin &amp; Sellier, 1985). GP<sub>strict</sub> excluye el lactato basal.</dd></dl></div>
-      <div class="gterm"><dl><dt>Carne DFD</dt><dd>Dark, Firm, Dry: defecto por pH final alto (&gt;5,9) tras agotarse el glucógeno por estrés antes de la faena.</dd></dl></div>
-      <div class="gterm"><dl><dt>Exsanguinación</dt><dd>Desangrado en la faena; convierte el músculo en un sistema termodinámico cerrado.</dd></dl></div>
-      <div class="gterm"><dl><dt>Potencia estadística</dt><dd>Probabilidad de detectar un efecto que sí existe (1 − β). Baja con muestras pequeñas: un nulo se vuelve ambiguo (Cohen, 1988; Altman &amp; Bland, 1995).</dd></dl></div>
-      <div class="gterm"><dl><dt>Monte Carlo</dt><dd>Simulación que repite un experimento con datos aleatorios muchas veces para estimar una probabilidad.</dd></dl></div>
-      <div class="gterm"><dl><dt>Enantiómero (D / L glucosa)</dt><dd>Moléculas imagen especular: D es metabolizable; L es inerte. Permiten separar el efecto químico del metabólico.</dd></dl></div>
-      <div class="gterm"><dl><dt>VAN · Valor Actual Neto</dt><dd>Suma de los flujos futuros descontados menos la inversión inicial. Positivo = el proyecto crea valor.</dd></dl></div>
-      <div class="gterm"><dl><dt>TSD · Tasa Social de Descuento</dt><dd>Tasa con que se traen los flujos futuros a valor presente. Más alta → VAN menor.</dd></dl></div>
-    </div>
-  </div>
-  <div class="blk">
-    <h3>Los cuatro manuscritos (2026)</h3>
-    <p style="font-size:12.5px">Manuscritos del grupo A. Ramírez-Reveco (Universidad Austral de Chile), en preparación o revisión. A 2026-08-10 ninguno consta publicado en CrossRef, PubMed/Europe PMC ni como preprint, por lo que se citan sin DOI. Las observaciones críticas de esta herramienta se refieren a estas versiones y pueden no aplicar a las que finalmente se publiquen.</p>
-    <div class="ref"><span class="n">①</span> Ramírez-Reveco A, Gajardo G, Montero MJ, Tadich T, Werner M, Bustamante H, Errazuriz G, Strobel P (2026). <b>Morphological and genetic characterization of the Chilean creole donkey.</b> Manuscrito no publicado; el texto consultado lo declara destinado a <em>Journal of Animal Breeding and Genetics</em>.</div>
-    <div class="ref"><span class="n">②</span> Ramírez-Reveco A, Jerez-Timaure N, Gallo C, Strobel P (2026). <b>Formalizing the Strict Glycolytic Potential (GP<sub>strict</sub>): A Thermodynamic Framework for Postmortem Muscle Energetics.</b> Nota teórica; manuscrito no publicado.</div>
-    <div class="ref"><span class="n">③</span> Ramírez-Reveco A, Gómez Y, Catalán J, Strobel P, Bucci D, Yeste M, Rodríguez-Gil JE (2026). <b>Saturating concentrations of exogenous glucose, regardless of the enantiomeric form, don't play any relevant role in withstanding environmental stress during thawing of frozen equine semen.</b> Manuscrito no publicado.</div>
-    <div class="ref"><span class="n">④</span> Ulloa J, Oyarzun C, Rojas S, Nuñez I, Ulloa O, Ramírez-Reveco A (2026). <b>Tracción animal frente a mecanización motorizada en la pequeña agricultura de subsistencia chilena: Perspectiva histórica.</b> Manuscrito no publicado; Proyecto Fondef D08I1076.</div>
-  </div>
-  <div class="blk">
-    <h3>Referencias metodológicas</h3>
-    <p style="font-size:12.5px">Fundamentos clásicos en que se apoya cada simulador (el número indica cuál). Datos bibliográficos verificados contra CrossRef y los registros de los editores, 2026-08-10.</p>
-    <div class="ref"><span class="n">①</span> Wahlund S (1928). Zusammensetzung von Populationen und Korrelationserscheinungen vom Standpunkt der Vererbungslehre aus betrachtet. <em>Hereditas</em> 11(1): 65–106. <a href="https://doi.org/10.1111/j.1601-5223.1928.tb02483.x">doi:10.1111/j.1601-5223.1928.tb02483.x</a></div>
-    <div class="ref"><span class="n">①</span> Wright S (1951). The genetical structure of populations. <em>Annals of Eugenics</em> 15: 323–354. <a href="https://doi.org/10.1111/j.1469-1809.1949.tb02451.x">doi:10.1111/j.1469-1809.1949.tb02451.x</a> (el registro del editor fecha el fascículo en 1949; se cita como 1951 según PubMed y la convención).</div>
-    <div class="ref"><span class="n">①</span> Nei M (1977). F-statistics and analysis of gene diversity in subdivided populations. <em>Annals of Human Genetics</em> 41(2): 225–233. <a href="https://doi.org/10.1111/j.1469-1809.1977.tb01918.x">doi:10.1111/j.1469-1809.1977.tb01918.x</a></div>
-    <div class="ref"><span class="n">②</span> Monin G, Sellier P (1985). Pork of low technological quality with a normal rate of muscle pH fall in the immediate post-mortem period: The case of the Hampshire breed. <em>Meat Science</em> 13(1): 49–63. <a href="https://doi.org/10.1016/S0309-1740(85)80004-8">doi:10.1016/S0309-1740(85)80004-8</a></div>
-    <div class="ref"><span class="n">③</span> Cohen J (1988). <em>Statistical Power Analysis for the Behavioral Sciences</em>, 2.ª ed. Hillsdale, NJ: Lawrence Erlbaum Associates. ISBN 978-0-8058-0283-2.</div>
-    <div class="ref"><span class="n">③</span> Altman DG, Bland JM (1995). Absence of evidence is not evidence of absence. <em>BMJ</em> 311(7003): 485. <a href="https://doi.org/10.1136/bmj.311.7003.485">doi:10.1136/bmj.311.7003.485</a></div>
-  </div>
-</section>
-
+<div class="note">
+  <p>
+    Hay líneas de investigación en curso que se publicarán aquí a medida que haya resultados
+    que compartir. Mientras tanto, este sitio aloja únicamente material ya publicable.
+  </p>
 </div>
 
-<footer class="wrap">
-  <p>Herramienta de lectura crítica · construida sobre cuatro manuscritos 2026 del grupo A. Ramírez-Reveco, Instituto de Ciencia Animal / Programa Équidos, Universidad Austral de Chile. Los modelos son <b>reconstrucciones didácticas simplificadas</b> para explorar los supuestos, no reanálisis de los datos originales; fórmulas, calibración y limitaciones en <a href="https://github.com/rijdho/criolab/blob/main/METHODS.md">METHODS.md</a>.</p>
-  <p>Sin dependencias externas ni rastreo · vanilla JS + SVG, sin build · fuentes autohospedadas.</p>
-  <p>rijdho · Licencia <a href="https://github.com/rijdho/criolab/blob/main/LICENSE">MIT</a> · <a href="https://github.com/rijdho/criolab">Código fuente</a> · <a href="https://github.com/rijdho/criolab/blob/main/CITATION.cff">Cómo citar</a></p>
+<h2>Qué es esto</h2>
+
+<div class="about">
+  <p>
+    <strong>CrioLab</strong> reúne herramientas que hacen visible y manipulable el
+    razonamiento metodológico detrás de un resultado. La apuesta es simple: un supuesto que se
+    puede mover con un deslizador se entiende mejor que un supuesto descrito en prosa.
+  </p>
+  <p>
+    Todo funciona en el navegador, en el propio equipo. Ningún dato introducido sale de la
+    máquina, no hay analítica, ni CDN, ni peticiones a terceros: la tipografía viaja con el
+    sitio. El código es <strong>abierto y verificable</strong>, y los modelos van acompañados
+    de su documentación de métodos y de una suite de tests que fija sus valores exactos.
+  </p>
+</div>
+
+<footer>
+  <span>Ricardo Hartley Belmar</span>
+  <span>·</span>
+  <span>Licencia <a href="https://github.com/rijdho/criolab/blob/main/LICENSE">MIT</a></span>
+  <span>·</span>
+  <span><a href="https://github.com/rijdho/criolab">Código fuente</a></span>
+  <span>·</span>
+  <span><a href="https://github.com/rijdho/criolab/blob/main/CITATION.cff">Cómo citar</a></span>
 </footer>
 
+</div>
 <script>
-/* ===== MODELO PURO — funciones sin DOM; valores fijados por tests/model.test.mjs.
-   No mover los marcadores: los tests extraen este bloque del propio index.html. ===== */
-const GPTHR=90, PH_HI=6.4, PH_LO=5.5, DFD=5.9;
-function wahlundModel(pA,pB,w){
-  const hA=2*pA*(1-pA), hB=2*pB*(1-pB);
-  const Ho=w*hA+(1-w)*hB;
-  const pbar=w*pA+(1-w)*pB;
-  const He=2*pbar*(1-pbar);
-  const Fis=He>0?(He-Ho)/He:0;
-  const Fst=He>0?(w*(1-w)*(pA-pB)*(pA-pB))/(pbar*(1-pbar)):0;
-  return {Ho,He,Fis,Fst};
-}
-function stressCouple(stress){
-  return {gly:Math.round(100-92*(stress/100)), lac:Math.round(6+52*(stress/100))};
-}
-function phFromGP(gp){return Math.max(PH_LO,Math.min(PH_HI,PH_LO+(PH_HI-PH_LO)*(1-gp/GPTHR)));}
-function gpValues(gly,lac){
-  const gpS=2*gly, gpC=2*gly+lac;
-  return {gpS,gpC,phTrue:phFromGP(gpS),phPred:phFromGP(gpC)};
-}
-const TCRIT={1:12.706,2:4.303,3:3.182,4:2.776,5:2.571,6:2.447,7:2.365,8:2.306,9:2.262,10:2.228,12:2.179,14:2.145,16:2.120,18:2.101,20:2.086,24:2.064,28:2.048,30:2.042,40:2.021,50:2.009,60:2.000};
-function tcrit(df){if(TCRIT[df])return TCRIT[df];const ks=Object.keys(TCRIT).map(Number).sort((a,b)=>a-b);if(df>=60)return 1.98;let lo=ks[0],hi=ks[ks.length-1];for(let i=0;i<ks.length-1;i++){if(df>=ks[i]&&df<=ks[i+1]){lo=ks[i];hi=ks[i+1];break;}}const t=(df-lo)/(hi-lo);return TCRIT[lo]+t*(TCRIT[hi]-TCRIT[lo]);}
-function randn(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
-function power(n,delta,sd,iters){
-  if(n<2)return 0; const df=2*n-2, tc=tcrit(df); let rej=0;
-  for(let it=0;it<iters;it++){
-    let s1=0,s2=0,ss1=0,ss2=0;
-    for(let i=0;i<n;i++){const a=randn()*sd, b=delta+randn()*sd; s1+=a;s2+=b;ss1+=a*a;ss2+=b*b;}
-    const m1=s1/n,m2=s2/n;
-    const var1=(ss1-n*m1*m1)/(n-1), var2=(ss2-n*m2*m2)/(n-1);
-    const sp=Math.sqrt(((n-1)*var1+(n-1)*var2)/(2*n-2));
-    const t=(m2-m1)/(sp*Math.sqrt(2/n));
-    if(Math.abs(t)>tc)rej++;
-  }
-  return rej/iters;
-}
-const LOGI=93.63, INIT=391.32, Y6=978.30, Y12=1957;
-function econModel(crop,r,ha,diesel,maint){
-  const annual=crop*ha*diesel+LOGI-maint;
-  const cf=[-INIT];
-  for(let t=1;t<=12;t++){let f=annual; if(t===6)f+=Y6; if(t===12)f+=Y12; cf.push(f);}
-  let npv=0;const disc=cf.map((f,t)=>{const d=f/Math.pow(1+r,t);npv+=d;return d;});
-  return {disc,npv};
-}
-/* ===== FIN MODELO PURO ===== */
-
-/* ---------- theme ---------- */
-function curTheme(){const a=document.documentElement.getAttribute('data-theme');if(a)return a;return matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
-function syncThemeBtn(){document.getElementById('themeBtn').textContent=curTheme()==='dark'?'☀ Claro':'☾ Oscuro';}
-function toggleTheme(){const next=curTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);try{localStorage.setItem('theme',next)}catch(e){}syncThemeBtn();redrawAll();}
-/* ---------- tabs ---------- */
-document.getElementById('tabs').addEventListener('click',e=>{
-  const b=e.target.closest('.subtab');if(!b)return;
-  document.querySelectorAll('.subtab').forEach(t=>t.classList.remove('active'));
-  b.classList.add('active');
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('p-'+b.dataset.t).classList.add('active');
-  if(b.dataset.t==='semen'&&!document.getElementById('svg-pow').innerHTML)updPow();
-});
-function goTab(t){const b=document.querySelector('.subtab[data-t="'+t+'"]');if(b)b.click();window.scrollTo({top:0,behavior:'smooth'});}
-function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
-
-/* ================= 1. WAHLUND ================= */
-function setBurro(a,b,w){document.getElementById('pa').value=a;document.getElementById('pb').value=b;document.getElementById('w').value=w;updBurro();}
-function updBurro(){
-  const pA=+document.getElementById('pa').value, pB=+document.getElementById('pb').value, w=+document.getElementById('w').value;
-  document.getElementById('v-pa').textContent=pA.toFixed(2);
-  document.getElementById('v-pb').textContent=pB.toFixed(2);
-  document.getElementById('v-w').textContent=Math.round(w*100)+'%';
-  const {Ho,He,Fis,Fst}=wahlundModel(pA,pB,w);
-  document.getElementById('m-ho').textContent=Ho.toFixed(3);
-  document.getElementById('m-he').textContent=He.toFixed(3);
-  document.getElementById('m-fis').textContent=(Fis>=0?'+':'')+Fis.toFixed(3);
-  document.getElementById('m-fst').textContent=Fst.toFixed(3);
-  drawBurro(Ho,He,Fis);
-  const v=document.getElementById('ver-burro');
-  if(Math.abs(pA-pB)<0.06){
-    v.className='verdict v-good';
-    v.innerHTML='<b>Sin estructura:</b> A y B son casi idénticas, así que H₀≈Hₑ y F<sub>IS</sub>≈0. No hay ilusión — pero tampoco hay nada que separar.';
-  }else if(Fis>0.10){
-    v.className='verdict v-bad';
-    v.innerHTML='<b>F<sub>IS</sub>=+'+Fis.toFixed(2)+' sin una sola cruza consanguínea.</b> Todo el "déficit de heterocigotos" viene de mezclar dos rebaños (efecto Wahlund). El manuscrito ① reporta F<sub>IS</sub>=+0,18 y lo interpreta como endogamia; la estructura sola basta para producir un valor de esa magnitud, y el texto consultado no reporta un análisis que separe ambas causas.';
-  }else{
-    v.className='verdict v-warn';
-    v.innerHTML='<b>Déficit leve (F<sub>IS</sub>=+'+Fis.toFixed(2)+').</b> Suficiente estructura para inflar el índice de fijación aunque nadie sea endogámico.';
-  }
-}
-function drawBurro(Ho,He,Fis){
-  const base=170,bw=90,maxV=0.55;
-  const c1=cssv('--warn'),c2=cssv('--ok'),bd=cssv('--hairline');
-  const bars=[{x:150,v:Ho,c:c1,l:'H₀ observada'},{x:290,v:He,c:c2,l:'Hₑ esperada'}];
-  let s=`<line x1="60" y1="${base}" x2="470" y2="${base}" stroke="${bd}"/>`;
-  bars.forEach(b=>{
-    const h=b.v/maxV*130, y=base-h;
-    s+=`<rect x="${b.x}" y="${y}" width="${bw}" height="${h}" rx="6" fill="${b.c}"/>`;
-    s+=`<text x="${b.x+bw/2}" y="${y-9}" text-anchor="middle" class="svgtext" font-size="15" font-weight="700">${b.v.toFixed(3)}</text>`;
-    s+=`<text x="${b.x+bw/2}" y="${base+20}" text-anchor="middle" class="svgmuted" font-size="11">${b.l}</text>`;
+(function(){
+  const root = document.documentElement, btn = document.getElementById('theme');
+  btn.addEventListener('click', function(){
+    const dark = getComputedStyle(document.body).backgroundColor === 'rgb(18, 17, 24)';
+    const next = dark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (e) {}
   });
-  const yHo=base-Ho/maxV*130, yHe=base-He/maxV*130;
-  if(He-Ho>0.01){
-    s+=`<line x1="240" y1="${yHe}" x2="240" y2="${yHo}" stroke="${cssv('--crit')}" stroke-width="2" stroke-dasharray="4 3"/>`;
-    s+=`<text x="234" y="${(yHe+yHo)/2}" text-anchor="end" fill="${cssv('--crit')}" font-size="11" font-weight="600" font-family="${cssv('--mono')}">déficit</text>`;
-  }
-  document.getElementById('svg-burro').innerHTML=s;
-}
-
-/* ================= 2. GPSTRICT ================= */
-function setStress(v){document.getElementById('stress').value=v;stressDrive();updGP();}
-function stressDrive(){
-  const c=stressCouple(+document.getElementById('stress').value);
-  document.getElementById('gly').value=c.gly;
-  document.getElementById('lac').value=c.lac;
-}
-function updGP(){
-  const gly=+document.getElementById('gly').value, lac=+document.getElementById('lac').value, stress=+document.getElementById('stress').value;
-  document.getElementById('v-stress').textContent=stress+'%';
-  document.getElementById('v-gly').textContent=gly;
-  document.getElementById('v-lac').textContent=lac;
-  const {gpS,gpC,phTrue,phPred}=gpValues(gly,lac);
-  document.getElementById('m-gpc').textContent=gpC;
-  document.getElementById('m-gps').textContent=gpS;
-  drawGP(phPred,phTrue);
-  const v=document.getElementById('ver-gp');
-  const trueDFD=phTrue>DFD, predDFD=phPred>DFD;
-  if(trueDFD && !predDFD){
-    v.className='verdict v-bad';
-    v.innerHTML='<b>Falso negativo.</b> La fórmula clásica predice pH '+phPred.toFixed(2)+' (acidificación normal ✅) pero el pH real es '+phTrue.toFixed(2)+' → <b>carne DFD</b>. El lactato basal infló el GP y ocultó el defecto. Es el caso que el manuscrito ② postula, sin acompañarlo de datos empíricos en la versión consultada.';
-  }else if(trueDFD && predDFD){
-    v.className='verdict v-warn';
-    v.innerHTML='<b>Ambas detectan el problema</b> (pH real '+phTrue.toFixed(2)+'). Con estrés extremo hasta el GP clásico cae bajo el umbral; la divergencia importa en la zona intermedia.';
-  }else{
-    v.className='verdict v-good';
-    v.innerHTML='<b>Acidificación normal</b> (pH real '+phTrue.toFixed(2)+'). Con glucógeno suficiente ambas métricas coinciden y no hay diferencia práctica.';
-  }
-}
-function drawGP(phPred,phTrue){
-  const x0=55,x1=475,y=70,lo=5.4,hi=6.4;
-  const sx=v=>x0+(v-lo)/(hi-lo)*(x1-x0);
-  const bd=cssv('--hairline'),bad=cssv('--crit');
-  let s=`<rect x="${sx(DFD)}" y="${y-16}" width="${x1-sx(DFD)}" height="32" fill="${bad}" opacity="0.13"/>`;
-  s+=`<text x="${(sx(DFD)+x1)/2}" y="${y-24}" text-anchor="middle" fill="${bad}" font-size="11" font-weight="600" font-family="${cssv('--mono')}">zona DFD (pH &gt; 5,9)</text>`;
-  s+=`<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="${bd}" stroke-width="2"/>`;
-  for(let v=5.4;v<=6.4001;v+=0.2){s+=`<line x1="${sx(v)}" y1="${y-5}" x2="${sx(v)}" y2="${y+5}" stroke="${bd}"/><text x="${sx(v)}" y="${y+22}" text-anchor="middle" class="svgmuted" font-size="11">${v.toFixed(1)}</text>`;}
-  const mk=(val,col,lab,up)=>{
-    const x=sx(val), yy=up?y-1:y+1, ty=up?y-34:y+46;
-    return `<polygon points="${x},${yy} ${x-7},${up?yy-13:yy+13} ${x+7},${up?yy-13:yy+13}" fill="${col}"/>`+
-           `<text x="${x}" y="${ty}" text-anchor="middle" fill="${col}" font-size="12" font-weight="700" font-family="${cssv('--mono')}">${lab} ${val.toFixed(2)}</text>`;
-  };
-  s+=mk(phPred,cssv('--c-gp'),'clásico',true);
-  s+=mk(phTrue,cssv('--c1'),'real (strict)',false);
-  document.getElementById('svg-gp').innerHTML=s;
-}
-
-/* ================= 3. POWER ================= */
-function updPow(){
-  const n=+document.getElementById('n').value, delta=+document.getElementById('delta').value, sd=+document.getElementById('sd').value;
-  document.getElementById('v-n').textContent=n;
-  document.getElementById('v-delta').textContent=delta;
-  document.getElementById('v-sd').textContent=sd;
-  const curve=[]; let nNeed=null;
-  for(let nn=2;nn<=24;nn++){const p=power(nn,delta,sd,1400);curve.push({n:nn,p});if(nNeed===null&&p>=0.8)nNeed=nn;}
-  const pCur=curve.find(c=>c.n===n).p;
-  const mp=document.getElementById('m-pow');
-  mp.textContent=Math.round(pCur*100)+'%';
-  mp.style.color=pCur<0.5?cssv('--crit'):pCur<0.8?cssv('--warn'):cssv('--ok');
-  document.getElementById('m-nneed').textContent=nNeed?nNeed:'>24';
-  drawPow(curve,n,pCur);
-  const v=document.getElementById('ver-pow');
-  if(pCur<0.5){
-    v.className='verdict v-bad';
-    v.innerHTML='<b>Potencia '+Math.round(pCur*100)+'% con n='+n+'.</b> Aun existiendo una diferencia real de '+delta+' puntos, el test la detectaría menos de la mitad de las veces. Un resultado "sin diferencias significativas" es <b>esperable por diseño</b>, no evidencia de ausencia de efecto. Harían falta n≈'+(nNeed||'>24')+' para un 80%.';
-  }else if(pCur<0.8){
-    v.className='verdict v-warn';
-    v.innerHTML='<b>Potencia '+Math.round(pCur*100)+'%.</b> Por debajo del 80% convencional: un nulo sigue siendo ambiguo.';
-  }else{
-    v.className='verdict v-good';
-    v.innerHTML='<b>Potencia '+Math.round(pCur*100)+'%.</b> Con este n el nulo sí sería informativo — pero está lejos de los 4 sementales del estudio.';
-  }
-}
-function drawPow(curve,nCur,pCur){
-  const x0=50,x1=500,y0=25,y1=180;
-  const sx=n=>x0+(n-2)/(24-2)*(x1-x0), sy=p=>y1-p*(y1-y0);
-  const bd=cssv('--hairline'),ac=cssv('--c-semen'),gd=cssv('--ok');
-  let s=`<line x1="${x0}" y1="${sy(0.8)}" x2="${x1}" y2="${sy(0.8)}" stroke="${gd}" stroke-width="1" stroke-dasharray="4 3"/>`;
-  s+=`<text x="${x1}" y="${sy(0.8)-5}" text-anchor="end" fill="${gd}" font-size="11" font-family="${cssv('--mono')}">80%</text>`;
-  s+=`<line x1="${x0}" y1="${y1}" x2="${x1}" y2="${y1}" stroke="${bd}"/>`;
-  [0,0.25,0.5,0.75,1].forEach(p=>{s+=`<text x="${x0-8}" y="${sy(p)+4}" text-anchor="end" class="svgmuted" font-size="10">${p*100}%</text>`;});
-  [2,4,8,12,16,20,24].forEach(n=>{s+=`<text x="${sx(n)}" y="${y1+16}" text-anchor="middle" class="svgmuted" font-size="10">${n}</text>`;});
-  s+=`<text x="${(x0+x1)/2}" y="${y1+32}" text-anchor="middle" class="svgmuted" font-size="10">n por grupo</text>`;
-  let d='';curve.forEach((c,i)=>{d+=(i?'L':'M')+sx(c.n)+' '+sy(c.p)+' ';});
-  s+=`<path d="${d}" fill="none" stroke="${ac}" stroke-width="2.5"/>`;
-  s+=`<line x1="${sx(nCur)}" y1="${y0}" x2="${sx(nCur)}" y2="${y1}" stroke="${ac}" stroke-width="1" stroke-dasharray="3 3" opacity="0.45"/>`;
-  s+=`<circle cx="${sx(nCur)}" cy="${sy(pCur)}" r="6" fill="${ac}" stroke="${cssv('--surface')}" stroke-width="2"/>`;
-  s+=`<text x="${sx(nCur)}" y="${sy(pCur)-12}" text-anchor="middle" fill="${ac}" font-size="12" font-weight="700" font-family="${cssv('--mono')}">${Math.round(pCur*100)}%</text>`;
-  document.getElementById('svg-pow').innerHTML=s;
-}
-
-/* ================= 4. NPV ================= */
-let CROP=635.89, CROPNAME='Maíz';
-function setCrop(v,name){CROP=v;CROPNAME=name;document.getElementById('v-crop').textContent=name+' · '+v.toFixed(2);document.querySelectorAll('[data-crop]').forEach(b=>b.classList.toggle('on',b.textContent.trim()===name));updEcon();}
-function econFlows(){
-  const r=+document.getElementById('r').value/100, ha=+document.getElementById('ha').value, diesel=+document.getElementById('diesel').value, maint=+document.getElementById('maint').value;
-  return econModel(CROP,r,ha,diesel,maint);
-}
-function updEcon(){
-  const r=+document.getElementById('r').value, ha=+document.getElementById('ha').value, diesel=+document.getElementById('diesel').value, maint=+document.getElementById('maint').value;
-  document.getElementById('v-r').textContent=r.toFixed(1)+'%';
-  document.getElementById('v-ha').textContent=ha.toFixed(2);
-  document.getElementById('v-diesel').textContent=diesel.toFixed(2)+'×';
-  document.getElementById('v-maint').textContent=Math.round(maint);
-  const {disc,npv}=econFlows();
-  const mv=document.getElementById('m-van');
-  mv.textContent=npv.toLocaleString('es-CL',{maximumFractionDigits:0});
-  mv.style.color=npv<0?cssv('--crit'):npv<8000?cssv('--warn'):cssv('--ok');
-  const dv=npv-16796, de=document.getElementById('m-vandelta');
-  de.textContent=(dv>=0?'+':'')+dv.toLocaleString('es-CL',{maximumFractionDigits:0});
-  de.style.color=dv<-6000?cssv('--crit'):dv<0?cssv('--warn'):cssv('--ok');
-  drawEcon(disc,npv);
-  const v=document.getElementById('ver-econ');
-  if(npv<0){
-    v.className='verdict v-bad';
-    v.innerHTML='<b>VAN negativo.</b> Con estos supuestos la inversión destruye valor. El titular de +16.796 no es robusto: exige mantener a la vez tasa baja, diésel caro y alta intensidad de uso.';
-  }else if(npv<9000){
-    v.className='verdict v-warn';
-    v.innerHTML='<b>VAN '+Math.round(npv).toLocaleString('es-CL')+' USD:</b> muy por debajo del titular. Basta subir la tasa de descuento o bajar la intensidad de uso —el 108% del paper es simulado, no observado— para reducir el beneficio a la mitad.';
-  }else{
-    v.className='verdict v-good';
-    v.innerHTML='<b>VAN '+Math.round(npv).toLocaleString('es-CL')+' USD.</b> Positivo — pero nota cuánto se mueve con un solo deslizador. El resultado es un supuesto, no un dato.';
-  }
-}
-function drawEcon(disc,npv){
-  const x0=40,x1=505,base=130,mx=Math.max(...disc.map(Math.abs),1);
-  const bw=(x1-x0)/13-6;
-  const gd=cssv('--ok'),bad=cssv('--crit'),bd=cssv('--hairline');
-  let s=`<line x1="${x0}" y1="${base}" x2="${x1}" y2="${base}" stroke="${bd}"/>`;
-  disc.forEach((d,t)=>{
-    const x=x0+t*((x1-x0)/13)+3, h=Math.abs(d)/mx*95, y=d>=0?base-h:base;
-    s+=`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="2" fill="${d>=0?gd:bad}"/>`;
-    if(t%2===0||t===12)s+=`<text x="${x+bw/2}" y="${base+15}" text-anchor="middle" class="svgmuted" font-size="9.5">${t}</text>`;
-  });
-  s+=`<text x="${(x0+x1)/2}" y="${base+30}" text-anchor="middle" class="svgmuted" font-size="10">año (flujo descontado · verde ingreso, rojo egreso)</text>`;
-  s+=`<text x="${x0}" y="18" class="svgmuted" font-size="11" font-weight="700" fill="${cssv('--c-econ')}">${CROPNAME}</text>`;
-  document.getElementById('svg-econ').innerHTML=s;
-}
-
-/* ---------- init ---------- */
-function redrawAll(){updBurro();updGP();updEcon();if(document.getElementById('svg-pow').innerHTML)updPow();}
-syncThemeBtn(); updBurro(); stressDrive(); updGP(); setCrop(635.89,'Maíz'); updPow();
+})();
 </script>
 </body>
 </html>

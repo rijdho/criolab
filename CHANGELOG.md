@@ -6,6 +6,32 @@ Los cambios relevantes de este proyecto se anotan aquí. El formato sigue
 
 ## [Sin publicar]
 
+### Cambiado
+
+- **El repositorio pasa a ser un paraguas de varias líneas.** La raíz deja de servir los
+  simuladores y estrena un hub que dice qué es CrioLab y qué líneas hay; los cuatro
+  simuladores, sus métodos, su mapa conceptual y sus tests bajan a `simuladores/`. Motivo:
+  CrioLab acogerá más de una línea de trabajo, y con una sola en la raíz ninguna otra podía
+  entrar sin quedar subordinada.
+- La URL `https://rijdho.github.io/criolab/` pasa a resolver el hub. Quien la tuviera guardada
+  llega al hub con los simuladores a un clic, en la primera tarjeta. `CITATION.cff` apunta
+  ahora a `https://rijdho.github.io/criolab/simuladores/`, que es la obra que describe.
+- `fonts/` queda en la raíz, compartida por el hub y por cada línea. El simulador la referencia
+  como `../fonts/`.
+- `npm test` pasa de un glob de un solo directorio (`node --test tests/*.test.mjs`) al
+  descubrimiento recursivo (`node --test`), para que los tests de cada línea entren solos. El
+  workflow sube a Node 22 en consecuencia.
+- El README de la raíz se reescribe como README paraguas, y el del proyecto se traslada a
+  `simuladores/README.md`. De paso corrige una desactualización: el README seguía documentando
+  el despliegue por «Deploy from a branch» cuando desde `fd82653` va por Actions.
+
+### Añadido
+
+- `tests/hub.test.mjs`: cada línea enlazada desde el hub existe, hub y líneas declaran el mismo
+  idioma, sin CDN de fuentes, el conmutador `data-theme` gana en ambas direcciones, el borde
+  izquierdo de 3px no aparece en el hub (no porta veredictos), enlaces externos en lista blanca
+  y About presente. Validado por inyección de tres defectos deliberados.
+
 ## [1.1.0] — 2026-08-10
 
 ### Añadido

@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       # No dependencies and no lockfile: npm test just invokes Node's built-in
       # runner, so there is no `npm ci` and no npm cache to configure.
       - run: npm test

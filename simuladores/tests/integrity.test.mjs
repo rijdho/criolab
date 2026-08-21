@@ -67,9 +67,9 @@ test('todo range tiene un value representable con su min/step (el navegador ajus
 
 test('sin CDN de fuentes; las woff2 declaradas existen en el repo', () => {
   assert.ok(!/fonts\.googleapis|fonts\.gstatic|use\.typekit|fonts\.bunny/i.test(html));
-  const files = [...css.matchAll(/url\(\.\/(fonts\/[^)]+\.woff2)\)/g)].map(m => m[1]);
+  const files = [...css.matchAll(/url\(\.\.\/(fonts\/[^)]+\.woff2)\)/g)].map(m => m[1]);
   assert.equal(files.length, 2, 'deben declararse los dos subsets (latin + latin-ext)');
-  for (const f of files) assert.ok(existsSync(new URL(`../${f}`, import.meta.url)), `falta ${f}`);
+  for (const f of files) assert.ok(existsSync(new URL(`../../${f}`, import.meta.url)), `falta ${f}`);
 });
 
 test('el borde izquierdo de 3px pertenece al veredicto, no a las tarjetas', () => {
